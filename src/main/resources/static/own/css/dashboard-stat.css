@@ -1,0 +1,125 @@
+.dashboard-stat .details-left {
+    position: absolute;
+    left: 15px;
+    padding-left: 15px;
+}
+
+.dashboard-stat .details-left .number {
+    padding-top: 25px;
+    text-align: left;
+    font-size: 34px;
+    line-height: 36px;
+    letter-spacing: -1px;
+    margin-bottom: 0;
+    font-weight: 300;
+}
+
+.dashboard-stat .details-left .desc {
+    text-align: left;
+    font-size: 16px;
+    letter-spacing: 0;
+    font-weight: 300;
+}
+
+.dashboard-stat .details-right {
+    position: absolute;
+    right: 15px;
+    padding-right: 15px;
+}
+
+.dashboard-stat .details-right .number {
+    padding-top: 25px;
+    text-align: right;
+    font-size: 34px;
+    line-height: 36px;
+    letter-spacing: -1px;
+    margin-bottom: 0;
+    font-weight: 300;
+}
+
+.dashboard-stat .details-right .desc {
+    text-align: right;
+    font-size: 16px;
+    letter-spacing: 0;
+    font-weight: 300;
+}
+
+.dashboard-stat.blue .details-left .number {
+    color: #FFFFFF;
+}
+
+.dashboard-stat.blue .details-left .desc {
+    color: #FFFFFF;
+    opacity: 1;
+    filter: alpha(opacity=100);
+}
+
+.dashboard-stat.blue .details-right .number {
+    color: #FFFFFF;
+}
+
+.dashboard-stat.blue .details-right .desc {
+    color: #FFFFFF;
+    opacity: 1;
+    filter: alpha(opacity=100);
+}
+
+.dashboard-stat.red .details-left .number {
+    color: #FFFFFF;
+}
+
+.dashboard-stat.red .details-left .desc {
+    color: #FFFFFF;
+    opacity: 1;
+    filter: alpha(opacity=100);
+}
+
+.dashboard-stat.red .details-right .number {
+    color: #FFFFFF;
+}
+
+.dashboard-stat.red .details-right .desc {
+    color: #FFFFFF;
+    opacity: 1;
+    filter: alpha(opacity=100);
+}
+
+.dashboard-stat.green .details-left .number {
+    color: #FFFFFF;
+}
+
+.dashboard-stat.green .details-left .desc {
+    color: #FFFFFF;
+    opacity: 1;
+    filter: alpha(opacity=100);
+}
+
+.dashboard-stat.green .details-right .number {
+    color: #FFFFFF;
+}
+
+.dashboard-stat.green .details-right .desc {
+    color: #FFFFFF;
+    opacity: 1;
+    filter: alpha(opacity=100);
+}
+
+.dashboard-stat.purple .details-left .number {
+    color: #FFFFFF;
+}
+
+.dashboard-stat.purple .details-left .desc {
+    color: #FFFFFF;
+    opacity: 1;
+    filter: alpha(opacity=100);
+}
+
+.dashboard-stat.purple .details-right .number {
+    color: #FFFFFF;
+}
+
+.dashboard-stat.purple .details-right .desc {
+    color: #FFFFFF;
+    opacity: 1;
+    filter: alpha(opacity=100);
+}

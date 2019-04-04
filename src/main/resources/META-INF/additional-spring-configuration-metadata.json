@@ -1,0 +1,14 @@
+{
+  "properties": [
+    {
+      "name": "netty.server.port",
+      "type": "java.lang.Integer",
+      "description": "Description for netty.server.port."
+    },
+    {
+      "name": "app.gateoneUrl",
+      "type": "java.lang.String",
+      "description": "Description for app.gateoneUrl."
+    }
+  ]
+}
