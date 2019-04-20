@@ -16,4 +16,6 @@ public interface MotnService {
     void postSelective(Motn motn);
 
     List<Motn> getListByTimelineNodeId(Long timelineNodeId);
+
+    List<Motn> getListByMetaObjectId(Long metaObjectId);
 }

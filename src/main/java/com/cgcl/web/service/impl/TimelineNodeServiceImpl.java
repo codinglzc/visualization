@@ -46,4 +46,9 @@ public class TimelineNodeServiceImpl implements TimelineNodeService {
     public TimelineNode getById(Long id) {
         return timelineNodeRepo.findById(id).orElse(null);
     }
+
+    @Override
+    public Long countByExpId(Long expId) {
+        return timelineNodeRepo.countByExpId(expId);
+    }
 }

@@ -18,4 +18,6 @@ public interface TimelineNodeService {
     List<TimelineNode> getListByExpId(Long expId);
 
     TimelineNode getById(Long id);
+
+    Long countByExpId(Long expId);
 }

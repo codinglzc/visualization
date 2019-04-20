@@ -1,9 +1,11 @@
 package com.cgcl.web.controller.restfull;
 
 import com.cgcl.common.util.Message;
+import com.cgcl.netty.ProfilerSocketServerHandler;
 import com.cgcl.web.domain.entity.Experiment;
 import com.cgcl.web.service.ExperimentService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -29,6 +31,9 @@ public class ExperimentController {
     @Resource
     private ExperimentService experimentService;
 
+    @Autowired
+    private ProfilerSocketServerHandler handler;
+
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     @ResponseBody
     public Message getExpAll(@RequestParam(value = "pageNum") Integer pageNum,
@@ -43,6 +48,7 @@ public class ExperimentController {
         Sort s = new Sort(order.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sort);
         Pageable pageable = PageRequest.of(pageNum, pageSize, s);
         Page<Experiment> page = experimentService.findAllByPageable(pageable);
+
         return Message.success().add("pageInfo", page);
     }
 
@@ -69,5 +75,11 @@ public class ExperimentController {
         log.info("POST:exp/delete?id=" + id);
         experimentService.deleteById(id);
         return Message.success();
+    }
+
+    @RequestMapping(value = "/getCurrentExpNum", method = RequestMethod.GET)
+    @ResponseBody
+    public Message getCurrentExpNum(){
+        return Message.success().add("currentExpNum", handler.getExpNum());
     }
 }

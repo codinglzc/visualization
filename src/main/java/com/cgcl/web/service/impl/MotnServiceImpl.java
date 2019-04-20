@@ -39,4 +39,9 @@ public class MotnServiceImpl implements MotnService {
         Example<Motn> example = Example.of(motn);
         return motnRepo.findAll(example);
     }
+
+    @Override
+    public List<Motn> getListByMetaObjectId(Long metaObjectId) {
+        return motnRepo.findAllByMetaObjectId(metaObjectId);
+    }
 }

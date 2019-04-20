@@ -45,9 +45,19 @@ public class MetaObjectServiceImpl implements MetaObjectService {
     @Override
     public List<MetaObject> getListByIds(String[] metaObjIds) {
         List<Long> list = new ArrayList<>();
-        for (String s: metaObjIds){
+        for (String s : metaObjIds) {
             list.add(Long.valueOf(s));
         }
         return metaObjectRepo.findAllById(list);
+    }
+
+    @Override
+    public List<MetaObject> getListByExpId(Long expId) {
+        return metaObjectRepo.findAllByExpId(expId);
+    }
+
+    @Override
+    public Long countByExpId(Long expId) {
+        return metaObjectRepo.countByExpId(expId);
     }
 }

@@ -16,9 +16,19 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class PageController {
 
-    @GetMapping("/home")
+    @GetMapping({"/", "/home"})
     public String home() {
         return "home";
+    }
+
+    @GetMapping("/settings")
+    public String settings() {
+        return "settings";
+    }
+
+    @GetMapping("/bootstrap")
+    public String bootstrap() {
+        return "bootstrap";
     }
 
     @GetMapping("/realtime")

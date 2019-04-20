@@ -386,6 +386,7 @@ var Realtime = function () {
                 //     status: "status",
                 // },
             ],
+            locale: "zh-CN",
             showColumns: true,
             height: 400,
             sortName: "varName",
@@ -607,7 +608,8 @@ var Realtime = function () {
                 },
                 tooltip: { // 自定义悬浮提示框内容
                     formatter: function (params, ticket, callback) {
-                        return "<b>" + params.data[9] + "</b>" + "<br>read<br>" + params.data[3];
+                        var varName = cur.masterlist[params.data[2]].varName;
+                        return "<b>" + varName + "</b>" + "<br>read<br>" + params.data[3];
                     }
                 }
             }]
@@ -627,7 +629,6 @@ var Realtime = function () {
                 $.each(accessedObjs, function (index2, item2) {
                     if (objs.hasOwnProperty(item2["objId"])) {
                         var obj = objs[item2["objId"]];
-                        obj["id"] += item2["objId"];
                         obj["read"] += item2["dynamic_read"];
                         obj["write"] += item2["dynamic_write"];
                         obj["read_in_cache"] += item2["read_in_cache"];
@@ -656,7 +657,6 @@ var Realtime = function () {
                 $.each(accessList, function (index2, item2) {
                     if (objs.hasOwnProperty(item["objId"])) {
                         var obj = objs[item["objId"]];
-                        obj["id"] += item["objId"];
                         obj["read"] += item2["dynamicRead"];
                         obj["write"] += item2["dynamicWrite"];
                         obj["read_in_cache"] += item2["readInCache"];
@@ -745,7 +745,8 @@ var Realtime = function () {
                 return params.data[dim];
             };
             option.series[0].tooltip.formatter = function (params, ticket, callback) {
-                return text + "<br>" + params.data[dim];
+                var varName = cur.masterlist[params.data[2]].varName;
+                return "<b>" + varName + "</b>" + "<br>read<br>" + params.data[dim];
             };
             memHeatmap.setOption(option);
         });
@@ -789,10 +790,10 @@ var Realtime = function () {
      */
     var _renderOneMemObjReadPie = function (data) {
         var pieData = [];
-        pieData.push({value: data[5], name: "read in cache"});
-        pieData.push({value: data[6], name: "strided read"});
-        pieData.push({value: data[7], name: "pointer read"});
-        pieData.push({value: data[8], name: "random read"});
+        pieData.push({value: data[5], name: "读（缓存命中）"});
+        pieData.push({value: data[6], name: "读（固定间隔读）"});
+        pieData.push({value: data[7], name: "读（指针访问读）"});
+        pieData.push({value: data[8], name: "读（随机读）"});
 
         var varName = cur.masterlist[data[2]].varName;
 
@@ -822,8 +823,8 @@ var Realtime = function () {
      */
     var _renderOneMemObjReadWritePie = function (data) {
         var pieData = [];
-        pieData.push({value: data[3], name: "read"});
-        pieData.push({value: data[4], name: "write"});
+        pieData.push({value: data[3], name: "读"});
+        pieData.push({value: data[4], name: "写"});
 
         var varName = cur.masterlist[data[2]].varName;
 

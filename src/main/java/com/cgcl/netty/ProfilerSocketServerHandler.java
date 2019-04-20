@@ -50,6 +50,10 @@ public class ProfilerSocketServerHandler extends ChannelInboundHandlerAdapter {
     @Resource
     private ThreadMemoryAccessService threadMemoryAccessService;
 
+    public int getExpNum() {
+        return expMetaObjMap.size();
+    }
+
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         String msgStr = (String) msg;
@@ -212,9 +216,7 @@ public class ProfilerSocketServerHandler extends ChannelInboundHandlerAdapter {
             } else {
                 // 如果本条消息是最后一条
                 // 更新 exp 的消耗时间
-                Experiment e = experimentService.getById(expId);
-                e.setConsumeTime((long) ((double) globalVars.get("time") * 1000000));
-                experimentService.putDescByIdSelective(e);
+                experimentService.putConsumeTimeById(expId, (long) ((double) globalVars.get("time") * 1000000));
 
                 // 处理 meta_object 的统计工作
                 for (Object item : masterList) {
@@ -258,6 +260,7 @@ public class ProfilerSocketServerHandler extends ChannelInboundHandlerAdapter {
                 if (expMetaObjMap.getOrDefault(expId, null) != null) {
                     expMetaObjMap.remove(expId);
                 }
+                readCount.set(0);
             }
         }
 

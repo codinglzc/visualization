@@ -2,9 +2,8 @@ package com.cgcl.web.controller.restfull;
 
 import com.cgcl.common.util.Message;
 import com.cgcl.web.domain.entity.Motn;
-import com.cgcl.web.domain.entity.ThreadMemoryAccess;
 import com.cgcl.web.domain.entity.TimelineNode;
-import com.cgcl.web.domain.vo.MotnVo;
+import com.cgcl.web.domain.vo.MotnVO;
 import com.cgcl.web.service.MetaObjectService;
 import com.cgcl.web.service.MotnService;
 import com.cgcl.web.service.ThreadMemoryAccessService;
@@ -31,7 +30,7 @@ import java.util.List;
 @Slf4j
 @Controller
 @RequestMapping("/motnVO")
-public class MotnVoController {
+public class MotnVOController {
     @Resource
     private MotnService motnService;
     @Resource
@@ -47,15 +46,15 @@ public class MotnVoController {
         log.info("GET:motl/getListByTimelineNodeId?timelineNodeId=" + timelineNodeId);
         TimelineNode timelineNode = timelineNodeService.getById(timelineNodeId);
         List<Motn> motlList = motnService.getListByTimelineNodeId(timelineNodeId);
-        List<MotnVo> motnVoList = new ArrayList<>();
+        List<MotnVO> motnVOList = new ArrayList<>();
         for(Motn motn : motlList){
-            MotnVo motnVo = new MotnVo();
+            MotnVO motnVo = new MotnVO();
             motnVo.setId(motn.getId());
             motnVo.setMetaObject(metaObjectService.getById(motn.getMetaObjectId()));
             motnVo.setTimelineNode(timelineNode);
             motnVo.setTmaList(threadMemoryAccessService.getListByMotnId(motn.getId()));
-            motnVoList.add(motnVo);
+            motnVOList.add(motnVo);
         }
-        return Message.success().add("list", motnVoList).add("time", timelineNode.getTime());
+        return Message.success().add("list", motnVOList).add("time", timelineNode.getTime());
     }
 }

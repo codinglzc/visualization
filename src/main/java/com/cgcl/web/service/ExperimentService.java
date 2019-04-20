@@ -23,4 +23,6 @@ public interface ExperimentService {
     void deleteById(Long id);
 
     void postSelective(Experiment exp);
+
+    void putConsumeTimeById(long expId, long time);
 }

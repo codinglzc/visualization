@@ -58,7 +58,7 @@ var Experiment = function () {
         },
         {
             field: "id",
-            title: "Id",
+            title: "ID",
             visible: false,
             sortable: true,
             halign: "center",
@@ -66,7 +66,7 @@ var Experiment = function () {
             width: "50px",
         }, {
             field: "createTime",
-            title: "Create time",
+            title: "创建时间",
             visible: true,
             sortable: true,
             halign: "center",
@@ -74,25 +74,25 @@ var Experiment = function () {
             width: "160px",
         }, {
             field: "consumeTime",
-            title: "Consume time",
+            title: "消耗时间",
             visible: true,
             sortable: true,
             halign: "center",
             align: "right",
-            width: "100px",
+            width: "130px",
             formatter: function (value, row, index, field) {
                 return Global.formatTime(value);
             }
         }, {
             field: "description",
-            title: "Description",
+            title: "描述",
             visible: true,
             sortable: false,
             halign: "center",
-            align: "right",
+            align: "left",
         }, {
             field: "numOfObjs",
-            title: "The number of Objects",
+            title: "内存对象个数",
             visible: false,
             sortable: false,
             halign: "center",
@@ -100,7 +100,7 @@ var Experiment = function () {
             width: "100px",
         }, {
             field: "numOfTimeNodes",
-            title: "The number of time nodes",
+            title: "时间节点个数",
             visible: false,
             sortable: false,
             halign: "center",
@@ -108,7 +108,7 @@ var Experiment = function () {
             width: "100px",
         }, {
             field: "operate",
-            title: "Operate",
+            title: "操作",
             halign: "center",
             align: "center",
             width: "50px",
@@ -134,15 +134,47 @@ var Experiment = function () {
             alert("获取 exps 数据失败！");
             return;
         }
-        var size = json["extend"]["pageInfo"]["size"];
+        var total = json["extend"]["pageInfo"]["totalElements"];
         var content = json["extend"]["pageInfo"]["content"];
+        for (var i in content) {
+            content[i]["numOfTimeNodes"] = countTimelineNodeByExpId(content[i]["id"]);
+            content[i]["numOfObjs"] = countMetaObjectByExpId(content[i]["id"]);
+        }
+
         return {
-            total: size,
+            total: total,
             rows: content,
         };
     };
 
+    // 根据ExpId获取TimelineNode的个数
+    var countTimelineNodeByExpId = function (expId) {
+        var msg = $.ajax({
+            url: "timeline/countByExpId",
+            data: {expId: expId},
+            type: "GET",
+            async: false,
+        })["responseJSON"];
+        if (!Global.checkServerMsg(msg))
+            return -1;
+        return msg["extend"]["count"];
+    };
+
+    // 根据ExpId获取MetaObject的个数
+    var countMetaObjectByExpId = function (expId) {
+        var msg = $.ajax({
+            url: "metaObj/countByExpId",
+            data: {expId: expId},
+            type: "GET",
+            async: false,
+        })["responseJSON"];
+        if (!Global.checkServerMsg(msg))
+            return -1;
+        return msg["extend"]["count"];
+    };
+
     var expsTableOptions = {
+        locale: "zh-CN",
         columns: columns,
         data: [],
         showColumns: true,
@@ -928,6 +960,7 @@ var Experiment = function () {
                 },
             ],
             data: [],
+            locale: "zh-CN",
             showColumns: true,
             height: 400,
             sortName: "varName",
@@ -1303,10 +1336,10 @@ var Experiment = function () {
      */
     var renderOneMemObjReadPie = function (data) {
         var pieData = [];
-        pieData.push({value: data[5], name: "read in cache"});
-        pieData.push({value: data[6], name: "strided read"});
-        pieData.push({value: data[7], name: "pointer read"});
-        pieData.push({value: data[8], name: "random read"});
+        pieData.push({value: data[5], name: "读（缓存命中）"});
+        pieData.push({value: data[6], name: "读（固定间隔读）"});
+        pieData.push({value: data[7], name: "读（指针访问读）"});
+        pieData.push({value: data[3] - data[5] - data[6] - data[7], name: "读（随机读）"});
 
         var oneMemObjPie = echarts.getInstanceByDom(document.getElementById("EXP_OneMemObjPie"));
         var option = oneMemObjPie.getOption();
@@ -1334,8 +1367,8 @@ var Experiment = function () {
      */
     var renderOneMemObjReadWritePie = function (data) {
         var pieData = [];
-        pieData.push({value: data[3], name: "read"});
-        pieData.push({value: data[4], name: "write"});
+        pieData.push({value: data[3], name: "读"});
+        pieData.push({value: data[4], name: "写"});
 
         var oneMemObjPie = echarts.getInstanceByDom(document.getElementById("EXP_OneMemObjPie"));
         var option = oneMemObjPie.getOption();
@@ -1435,6 +1468,190 @@ var Experiment = function () {
 
     // ---------------------------------- DB Utils End ----------------------------------- //
 
+    // ---------------------------------- EXP_TimelineChart init Begin ----------------------------------- //
+    var timelineChartOption = {
+        title: {
+            top: '5%',
+            text: '内存对象访存行为'
+        },
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'cross'
+            },
+            formatter: function (params) {
+                var rs = [];
+                rs.push("时间：" + params[0]['axisValue'] + " 秒 <br>");
+                $.each(params, function (index, value) {
+                    if (String(value['data'][1]).indexOf(".") > -1)
+                        rs.push(value['seriesName'].split("#")[0] + "：" + value['data'][1].toFixed(2) + "%<br>");
+                    else
+                        rs.push(value['seriesName'].split("#")[0] + "：" + value['data'][1] + "<br>");
+                });
+                return rs.join("");
+            }
+        },
+        legend: {
+            type: 'scroll',
+            top: '5%',
+            left: '15%',
+            right: '10%',
+            textStyle: {
+                fontSize: 15
+            },
+            data: []
+        },
+        grid: {
+            top: '25%',
+            left: '3%',
+            right: '10%',
+            bottom: '10%',
+            containLabel: true
+        },
+        toolbox: {
+            feature: {
+                dataZoom: {
+                    yAxisIndex: 'none'
+                },
+                restore: {},
+                saveAsImage: {}
+            }
+        },
+        dataZoom: [
+            {
+                type: 'inside',
+                start: 1,
+                end: 100
+            },
+            {
+                show: true,
+                type: 'slider',
+                bottom: '0%',
+                start: 1,
+                end: 100
+            }
+        ],
+        xAxis: {
+            type: 'value',
+            name: '时间（秒）',
+            nameTextStyle: {
+                fontSize: 15
+            },
+        },
+        yAxis: {
+            type: 'value',
+            name: '',
+            nameTextStyle: {
+                fontSize: 15
+            },
+        },
+        series: []
+    };
+
+    var timelineChart;
+
+    /**
+     * 初始化 EChart
+     */
+    var lineInit = function () {
+        timelineChart = echarts.init(document.getElementById('EXP_TimelineChart'), theme);
+    };
+    // ---------------------------------- EXP_TimelineChart init End ----------------------------------- //
+
+    // ---------------------------------- EXP_MemObjSelect Begin ----------------------------------- //
+    var memObjIdsSelects = [];
+    var memObjWithAggregateInfoMap = [];
+
+    var memObjSelectInit = function () {
+        $.get("metaObj/byExpId", {expId: getExpId()}, function (ret) {
+            if (!Global.checkServerMsg(ret)) {
+                alert("$.get(\"metaObj/byExpId\" 失败！");
+                return;
+            }
+            // 先清空
+            $('#EXP_MemObjSelect').empty();
+            $("#EXP_MemObjSelect").multiSelect("destroy");
+            // 为EXP_MemObjSelect添加options
+            var objIds = [];
+            for (var i in  ret["extend"]["list"]) {
+                var metaObj = ret["extend"]["list"][i];
+                var $option = $('<option value="' + metaObj['id'] + '">' + metaObj['varName'] + '</option>');
+                $('#EXP_MemObjSelect').append($option);
+                objIds.push(metaObj['id']);
+            }
+            // 获取对象数据
+            $.get("metaObj/getMetaObjsWithAggregateInfoByIds", {ids: objIds.join(",")}, function (res) {
+                if (!Global.checkServerMsg(res)) {
+                    alert("$.get(\"metaObj/getMetaObjsWithAggregateInfoByIds\" 失败！");
+                    return;
+                }
+                memObjWithAggregateInfoMap = res["extend"]["map"];
+                console.log(memObjWithAggregateInfoMap);
+                // 初始化EXP_MemObjSelect
+                $("#EXP_MemObjSelect").multiSelect({
+                    keepOrder: true,
+                    selectableOptgroup: true, // 当点击多选组时，将会移动组里所有元素至对面
+                    selectableHeader: "<div class='text-info text-center'>可选对象</div>",
+                    selectionHeader: "<div class='text-success text-center'>已选对象</div>",
+                    afterSelect: function (values) {
+                        Array.prototype.push.apply(memObjIdsSelects, values);
+                        renderTimelineChar();
+                    },
+                    afterDeselect: function (values) {
+                        memObjIdsSelects = $.grep(memObjIdsSelects, function (value) {
+                            return $.inArray(value, values) < 0;
+                        });
+                        renderTimelineChar();
+                    },
+                });
+                // 初始化 EXP_TypeSelect
+                $('#EXP_TypeSelect').attr("disabled", false);
+                $('#EXP_TypeSelect').removeClass("disabled");
+                $("#EXP_TypeSelect").selectpicker();
+                $('#EXP_TypeSelect').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
+                    renderTimelineChar();
+                });
+            });
+        });
+    };
+
+    var renderTimelineChar = function (kind) {
+        var kind = $("#EXP_TypeSelect").val();
+        timelineChart.clear();
+        var legendData = [];
+        var series = [];
+        $.each(memObjWithAggregateInfoMap, function (key, value) {
+            var id = key.split("#")[1].trim();
+            if ($.inArray(id, memObjIdsSelects) >= 0) {
+                legendData.push(key);
+                var line = {};
+                line["name"] = key;
+                line["type"] = "line";
+                line["data"] = [];
+                // line["showSymbol"] = false;
+                line["hoverAnimation"] = false;
+                line["smooth"] = true;
+                line["lineStyle"] = {normal: {opacity: 0.5}};
+                $.each(value, function (i, objNode) {
+                    var pArr = [(objNode["time"] / 1000000.0).toFixed(2), objNode[kind]];
+                    line["data"].push(pArr);
+                });
+                series.push(line);
+            }
+        });
+        timelineChartOption.legend.data = legendData;
+        timelineChartOption.series = series;
+        if(kind.indexOf("Ratio") !== -1){
+            timelineChartOption.yAxis.name = "百分比（%）";
+        }else {
+            timelineChartOption.yAxis.name = "数量（个）";
+        }
+        // console.log(timelineChartOption);
+        timelineChart.setOption(timelineChartOption);
+    };
+    // ---------------------------------- EXP_MemObjSelect End ----------------------------------- //
+
+
     return {
         init: function () {
             initExpsTable(); // 初始化模态框的exp表格
@@ -1447,10 +1664,13 @@ var Experiment = function () {
             memHeatmapInit();
             oneMemObjBtnInit();
             oneMemObjPieInit();
+            lineInit();
         },
         chooseExpOnclick: function () {
             checkEXP_ChooseExpInModalBtn();
             checkEXP_CloseInModalBtn();
+            // 刷新 EXP_ChooseExpModal 的表格
+            refreshTable($("#EXP_ExpsTable"));
         },
         saveExpOnclick: function () {
             // 修改 exp，发送 ajax
@@ -1481,6 +1701,9 @@ var Experiment = function () {
 
             // 初始化组件
             initComponents();
+
+            // 初始化 EXP_MemObjSelect
+            memObjSelectInit();
         }
     }
 }();

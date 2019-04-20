@@ -64,17 +64,42 @@ var Global = function () {
      * @returns {string}
      */
     var formatTime = function (ms) {
-        ms = ms / 1000;
-        var days = parseInt(ms / (1000 * 60 * 60 * 24));
+        ms = parseInt(ms / 1000);
+        // var days = parseInt(ms / (1000 * 60 * 60 * 24));
         var hours = parseInt((ms % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         var minutes = parseInt((ms % (1000 * 60 * 60)) / (1000 * 60));
         var seconds = parseInt((ms % (1000 * 60)) / 1000);
         var rs = "";
-        if (days !== 0) rs += days + " 天 ";
+        // if (days !== 0) rs += days + " 天 ";
         if (hours !== 0) rs += hours + " 小时 ";
         if (minutes !== 0) rs += minutes + " 分钟 ";
         if (seconds !== 0) rs += seconds + " 秒 ";
+        if (hours === 0 && minutes === 0 && seconds === 0)
+            return "0 秒";
         return rs;
+    };
+
+    /**
+     * 获取当前正在运行的实验个数
+     * @returns {number}
+     */
+    var getCurrentExpNum = function () {
+        var currentExpNum = 1;
+        $.ajax({
+            url: "exp/getCurrentExpNum",
+            data: {},
+            type: "GET",
+            dataType: "json",
+            async: false,
+            success: function (result) {
+                if (Global.checkServerMsg(result)) {
+                    currentExpNum = result['extend']['currentExpNum'];
+                } else {
+                    alert("获取当前正在运行的实验个数失败！");
+                }
+            }
+        });
+        return currentExpNum;
     };
 
     return {
@@ -84,7 +109,8 @@ var Global = function () {
         checkServerMsg: checkServerMsg,
         getTimeStrFromMicrosecond: getTimeStrFromMicrosecond,
         getMicrosecondFromTimeStr: getMicrosecondFromTimeStr,
-        formatTime: formatTime
+        formatTime: formatTime,
+        getCurrentExpNum: getCurrentExpNum
     }
 }();
 

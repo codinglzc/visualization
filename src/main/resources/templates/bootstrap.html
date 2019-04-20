@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
+<!--[if !IE]><!-->
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+    <!-- BEGIN HEAD -->
+    <head>
+        <meta charset="utf-8" />
+        <title>Visualization | Bootstrap</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta content="width=device-width, initial-scale=1" name="viewport" />
+        <meta content="" name="description" />
+        <meta content="" name="author" />
+        <!-- BEGIN GLOBAL MANDATORY STYLES -->
+        <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
+        <link th:href="@{/assets/global/plugins/font-awesome/css/font-awesome.min.css}" rel="stylesheet" type="text/css" />
+        <link th:href="@{/assets/global/plugins/simple-line-icons/simple-line-icons.min.css}" rel="stylesheet" type="text/css" />
+        <link th:href="@{/assets/global/plugins/bootstrap/css/bootstrap.min.css}" rel="stylesheet" type="text/css" />
+        <link th:href="@{/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css}" rel="stylesheet" type="text/css" />
+        <!-- END GLOBAL MANDATORY STYLES -->
+        <!-- BEGIN PAGE LEVEL PLUGINS -->
+        <link th:href="@{/assets/global/plugins/bootstrap-select/css/bootstrap-select.min.css}" rel="stylesheet" type="text/css" />
+        <link th:href="@{/assets/global/plugins/jquery-multi-select/css/multi-select.css}" rel="stylesheet" type="text/css" />
+        <link th:href="@{/assets/global/plugins/select2/css/select2.min.css}" rel="stylesheet" type="text/css" />
+        <link th:href="@{/assets/global/plugins/select2/css/select2-bootstrap.min.css}" rel="stylesheet" type="text/css" />
+        <!-- END PAGE LEVEL PLUGINS -->
+        <!-- BEGIN THEME GLOBAL STYLES -->
+        <link th:href="@{/assets/global/css/components-rounded.min.css}" rel="stylesheet" id="style_components" type="text/css" />
+        <link th:href="@{/assets/global/css/plugins.min.css}" rel="stylesheet" type="text/css" />
+        <!-- END THEME GLOBAL STYLES -->
+        <!-- BEGIN THEME LAYOUT STYLES -->
+        <link th:href="@{/assets/layouts/layout/css/layout.min.css}" rel="stylesheet" type="text/css" />
+        <link th:href="@{/assets/layouts/layout/css/themes/darkblue.min.css}" rel="stylesheet" type="text/css" id="style_color" />
+        <link th:href="@{/assets/layouts/layout/css/custom.min.css}" rel="stylesheet" type="text/css" />
+        <!-- END THEME LAYOUT STYLES -->
+    </head>
+    <!-- END HEAD -->
+
+    <body class="page-header-fixed page-sidebar-closed-hide-logo page-content-white page-sidebar-fixed page-footer-fixed">
+        <!-- BEGIN HEADER -->
+        <div class="page-header navbar navbar-fixed-top">
+            <!-- BEGIN HEADER INNER -->
+            <div class="page-header-inner ">
+                <!-- BEGIN LOGO -->
+                <div class="page-logo">
+                    <a href="/home">
+                        <img th:src="@{/assets/layouts/layout/img/logo.png}" alt="logo" class="logo-default" /> </a>
+                    <div class="menu-toggler sidebar-toggler">
+                        <span></span>
+                    </div>
+                </div>
+                <!-- END LOGO -->
+                <!-- BEGIN RESPONSIVE MENU TOGGLER -->
+                <a href="javascript:;" class="menu-toggler responsive-toggler" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span></span>
+                </a>
+                <!-- END RESPONSIVE MENU TOGGLER -->
+            </div>
+            <!-- END HEADER INNER -->
+        </div>
+        <!-- END HEADER -->
+        <!-- BEGIN HEADER & CONTENT DIVIDER -->
+        <div class="clearfix"> </div>
+        <!-- END HEADER & CONTENT DIVIDER -->
+        <!-- BEGIN CONTAINER -->
+        <div class="page-container">
+            <!-- BEGIN SIDEBAR -->
+            <div class="page-sidebar-wrapper">
+                <!-- BEGIN SIDEBAR -->
+                <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
+                <!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
+                <div class="page-sidebar navbar-collapse collapse">
+                    <!-- BEGIN SIDEBAR MENU -->
+                    <!-- DOC: Apply "page-sidebar-menu-light" class right after "page-sidebar-menu" to enable light sidebar menu style(without borders) -->
+                    <!-- DOC: Apply "page-sidebar-menu-hover-submenu" class right after "page-sidebar-menu" to enable hoverable(hover vs accordion) sub menu mode -->
+                    <!-- DOC: Apply "page-sidebar-menu-closed" class right after "page-sidebar-menu" to collapse("page-sidebar-closed" class must be applied to the body element) the sidebar sub menu mode -->
+                    <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
+                    <!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
+                    <!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
+                    <ul class="page-sidebar-menu  page-header-fixed " data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200" style="padding-top: 20px">
+                        <li class="nav-item">
+                            <a href="/home">
+                                <i class="icon-home"></i>
+                                <span class="title">主页</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/settings">
+                                <i class="icon-settings"></i>
+                                <span class="title">设置</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/bootstrap">
+                                <i class="fa fa-send"></i>
+                                <span class="title">启动</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/realtime">
+                                <i class="icon-bar-chart"></i>
+                                <span class="title">实验（正在运行）</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/experiment">
+                                <i class="icon-pie-chart"></i>
+                                <span class="title">实验（回看）</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" target="_blank">
+                                <i class="fa fa-terminal"></i>
+                                <span class="title">终端</span>
+                            </a>
+                        </li>
+                        <li class="start nav-item">
+                            <a href="/blank_page">
+                                <i class="icon-layers"></i>
+                                <span class="title">Blank page</span>
+                            </a>
+                        </li>
+                    </ul>
+                    <!-- END SIDEBAR MENU -->
+                    <!-- END SIDEBAR MENU -->
+                </div>
+                <!-- END SIDEBAR -->
+            </div>
+            <!-- END SIDEBAR -->
+            <!-- BEGIN CONTENT -->
+            <div class="page-content-wrapper">
+                <!-- BEGIN CONTENT BODY -->
+                <div class="page-content">
+                    <!-- BEGIN PAGE HEADER-->
+                    <!-- BEGIN THEME PANEL -->
+                    <div class="theme-panel hidden-xs hidden-sm">
+                        <div class="toggler"> </div>
+                        <div class="toggler-close"> </div>
+                        <div class="theme-options">
+                            <div class="theme-option theme-colors clearfix">
+                                <span> THEME COLOR </span>
+                                <ul>
+                                    <li class="color-default current tooltips" data-style="default" data-container="body" data-original-title="Default"> </li>
+                                    <li class="color-darkblue tooltips" data-style="darkblue" data-container="body" data-original-title="Dark Blue"> </li>
+                                    <li class="color-blue tooltips" data-style="blue" data-container="body" data-original-title="Blue"> </li>
+                                    <li class="color-grey tooltips" data-style="grey" data-container="body" data-original-title="Grey"> </li>
+                                    <li class="color-light tooltips" data-style="light" data-container="body" data-original-title="Light"> </li>
+                                    <li class="color-light2 tooltips" data-style="light2" data-container="body" data-html="true" data-original-title="Light 2"> </li>
+                                </ul>
+                            </div>
+                            <div class="theme-option">
+                                <span> Theme Style </span>
+                                <select class="layout-style-option form-control input-sm">
+                                    <option value="square" selected="selected">Square corners</option>
+                                    <option value="rounded">Rounded corners</option>
+                                </select>
+                            </div>
+                            <div class="theme-option">
+                                <span> Layout </span>
+                                <select class="layout-option form-control input-sm">
+                                    <option value="fluid" selected="selected">Fluid</option>
+                                    <option value="boxed">Boxed</option>
+                                </select>
+                            </div>
+                            <div class="theme-option">
+                                <span> Header </span>
+                                <select class="page-header-option form-control input-sm">
+                                    <option value="fixed" selected="selected">Fixed</option>
+                                    <option value="default">Default</option>
+                                </select>
+                            </div>
+                            <div class="theme-option">
+                                <span> Top Menu Dropdown</span>
+                                <select class="page-header-top-dropdown-style-option form-control input-sm">
+                                    <option value="light" selected="selected">Light</option>
+                                    <option value="dark">Dark</option>
+                                </select>
+                            </div>
+                            <div class="theme-option">
+                                <span> Sidebar Mode</span>
+                                <select class="sidebar-option form-control input-sm">
+                                    <option value="fixed">Fixed</option>
+                                    <option value="default" selected="selected">Default</option>
+                                </select>
+                            </div>
+                            <div class="theme-option">
+                                <span> Sidebar Menu </span>
+                                <select class="sidebar-menu-option form-control input-sm">
+                                    <option value="accordion" selected="selected">Accordion</option>
+                                    <option value="hover">Hover</option>
+                                </select>
+                            </div>
+                            <div class="theme-option">
+                                <span> Sidebar Style </span>
+                                <select class="sidebar-style-option form-control input-sm">
+                                    <option value="default" selected="selected">Default</option>
+                                    <option value="light">Light</option>
+                                </select>
+                            </div>
+                            <div class="theme-option">
+                                <span> Sidebar Position </span>
+                                <select class="sidebar-pos-option form-control input-sm">
+                                    <option value="left" selected="selected">Left</option>
+                                    <option value="right">Right</option>
+                                </select>
+                            </div>
+                            <div class="theme-option">
+                                <span> Footer </span>
+                                <select class="page-footer-option form-control input-sm">
+                                    <option value="fixed">Fixed</option>
+                                    <option value="default" selected="selected">Default</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END THEME PANEL -->
+                    <!-- BEGIN PAGE BAR -->
+                    <div class="page-bar">
+                        <ul class="page-breadcrumb">
+                            <li>
+                                <a href="/home">主页</a>
+                                <i class="fa fa-circle"></i>
+                            </li>
+                            <li>
+                                <a href="#">启动</a>
+                                <i class="fa fa-circle"></i>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- END PAGE BAR -->
+                    <!-- BEGIN PAGE TITLE-->
+                    <h3 class="page-title"> &nbsp;
+                        <!--<small>blank page layout</small>-->
+                    </h3>
+                    <!-- END PAGE TITLE-->
+                    <!-- END PAGE HEADER-->
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                            <div class="portlet light bordered" id="form_wizard_1">
+                                <div class="portlet-title">
+                                    <div class="caption">
+                                        <i class=" icon-layers font-red"></i>
+                                        <span class="caption-subject font-red bold uppercase"> Form Wizard -
+                                            <span class="step-title"> Step 1 of 4 </span>
+                                        </span>
+                                    </div>
+                                    <div class="actions">
+                                        <a class="btn btn-circle btn-icon-only btn-default" href="javascript:;">
+                                            <i class="icon-cloud-upload"></i>
+                                        </a>
+                                        <a class="btn btn-circle btn-icon-only btn-default" href="javascript:;">
+                                            <i class="icon-wrench"></i>
+                                        </a>
+                                        <a class="btn btn-circle btn-icon-only btn-default" href="javascript:;">
+                                            <i class="icon-trash"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="portlet-body form">
+                                    <form class="form-horizontal" action="/realtime" id="BS_SubmitForm" method="GET">
+                                        <div class="form-wizard">
+                                            <div class="form-body">
+                                                <ul class="nav nav-pills nav-justified steps">
+                                                    <li>
+                                                        <a href="#BS_Tab1" data-toggle="tab" class="step">
+                                                            <span class="number"> 1 </span>
+                                                            <span class="desc">
+                                                                <i class="fa fa-check"></i> SSH配置 </span>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#BS_Tab2" data-toggle="tab" class="step">
+                                                            <span class="number"> 2 </span>
+                                                            <span class="desc">
+                                                                <i class="fa fa-check"></i> Pin Tool </span>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#BS_Tab3" data-toggle="tab" class="step">
+                                                            <span class="number"> 3 </span>
+                                                            <span class="desc">
+                                                                <i class="fa fa-check"></i> 测试程序 </span>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#BS_Tab4" data-toggle="tab" class="step">
+                                                            <span class="number"> 4 </span>
+                                                            <span class="desc">
+                                                                <i class="fa fa-check"></i> 实验启动 </span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                                <div id="bar" class="progress progress-striped" role="progressbar">
+                                                    <div class="progress-bar progress-bar-success"> </div>
+                                                </div>
+                                                <div class="tab-content">
+                                                    <div class="alert alert-danger display-none">
+                                                        <button class="close" data-dismiss="alert"></button> You have some form errors. Please check below. </div>
+                                                    <div class="alert alert-success display-none">
+                                                        <button class="close" data-dismiss="alert"></button> Your form validation is successful! </div>
+                                                    <div class="tab-pane active" id="BS_Tab1">
+                                                        <h3 class="block">设置Profiler所在机器的ssh参数</h3>
+                                                        <div class="form-group">
+                                                            <label for="BS_ProfilerIP" class="control-label col-md-3">IP
+                                                                <span class="required"> * </span>
+                                                            </label>
+                                                            <div class="col-md-4">
+                                                                <input id="BS_ProfilerIP" type="text" class="form-control" name="profiler_ip" value="222.20.79.232"/>
+                                                                <span class="help-block"> 请提供机器的IP地址，例如：222.20.79.232。 </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="BS_ProfilerPort" class="control-label col-md-3">端口
+                                                                <span class="required"> * </span>
+                                                            </label>
+                                                            <div class="col-md-4">
+                                                                <input id="BS_ProfilerPort" type="text" class="form-control" name="profiler_port" value="50005"/>
+                                                                <span class="help-block"> 请提供机器的ssh端口号，例如：22。 </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="BS_Username" class="control-label col-md-3">用户名
+                                                                <span class="required"> * </span>
+                                                            </label>
+                                                            <div class="col-md-4">
+                                                                <input id="BS_Username" type="text" class="form-control" name="profiler_username" value="lzc"/>
+                                                                <span class="help-block"> 请提供用户名。 </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="BS_Password" class="control-label col-md-3">登录密码
+                                                                <span class="required"> * </span>
+                                                            </label>
+                                                            <div class="col-md-4">
+                                                                <input id="BS_Password" type="password" class="form-control" name="profiler_password" value="liu950302" />
+                                                                <span class="help-block"> 请提供密码。 </span>
+                                                            </div>
+                                                        </div>
+                                                </div>
+                                                    <div class="tab-pane" id="BS_Tab2">
+                                                        <h3 class="block">设置和编译 Pin 工具</h3>
+                                                        <div class="form-group">
+                                                            <label for="BS_PinToolBase" class="control-label col-md-3">Pin Tool目录
+                                                                <span class="required"> * </span>
+                                                            </label>
+                                                            <div class="col-md-4">
+                                                                <input id="BS_PinToolBase" type="text" class="form-control" name="pin_tool" value="/home/lzc/Profiler"/>
+                                                                <span class="help-block"> 请提供Pin Tool的目录。 </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="BS_PinToolCompile" class="control-label col-md-3">Pin Tool编译命令
+                                                                <span class="required"> * </span>
+                                                            </label>
+                                                            <div class="col-md-4">
+                                                                <div class="input-group">
+                                                                    <input id="BS_PinToolCompile" type="text" class="form-control" name="pin_tool_compile" disabled />
+                                                                    <span class="input-group-btn">
+                                                                        <button id="BS_PinToolCompileBtn" class="btn blue" type="button">执行编译</button>
+                                                                    </span>
+                                                                </div>
+                                                                <span id="BS_PinToolCompileSuccess" class="help-block text-success display-none">
+                                                                    编译成功！
+                                                                </span>
+                                                                <span id="BS_PinToolCompileFailed" class="help-block text-error display-none">
+                                                                    编译错误！
+                                                                </span>
+                                                                <span class="help-block"> 自动生成Pin Tool编译的Linux命令。 </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="tab-pane" id="BS_Tab3">
+                                                    <h3 class="block">设置测试程序</h3>
+                                                    <div class="form-group">
+                                                        <label for="BS_AppsBase" class="control-label col-md-3">测试程序目录
+                                                            <span class="required"> * </span>
+                                                        </label>
+                                                        <div class="col-md-4">
+                                                            <input id="BS_AppsBase" type="text" class="form-control" name="apps_base"/>
+                                                            <span class="help-block"> 测试程序默认放在PinTool目录下的apps文件夹中，如果不是，则需要修改！ </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="BS_App" class="control-label col-md-3">测试程序
+                                                            <span class="required"> * </span>
+                                                        </label>
+                                                        <div class="col-md-4">
+                                                            <select id="BS_App" class="bs-select form-control" name="app"></select>
+                                                            <span class="help-block"> 请选择需要测试的程序。 </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="BS_AppCompile" class="control-label col-md-3">测试程序编译
+                                                            <span class="required"> * </span>
+                                                        </label>
+                                                        <div class="col-md-4">
+                                                            <div class="input-group">
+                                                                <input id="BS_AppCompile" type="text" class="form-control" name="pin_tool_compile" disabled />
+                                                                <span class="input-group-btn">
+                                                                        <button id="BS_AppCompileBtn" class="btn blue" type="button">执行编译</button>
+                                                                    </span>
+                                                            </div>
+                                                            <span id="BS_AppCompileSuccess" class="help-block text-success display-none">
+                                                                    编译成功！
+                                                                </span>
+                                                            <span id="BS_AppCompileFailed" class="help-block text-error display-none">
+                                                                    编译错误！
+                                                                </span>
+                                                            <span class="help-block"> 自动生成测试程序编译的Linux命令。 </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                    <div class="tab-pane" id="BS_Tab4">
+                                                        <h3 class="block">实验启动</h3>
+                                                        <div class="form-group">
+                                                            <label for="BS_ScriptCachelineBits" class="control-label col-md-3">设置缓存行大小
+                                                                <span class="required"> * </span>
+                                                            </label>
+                                                            <div class="col-md-4">
+                                                                <input id="BS_ScriptCachelineBits" type="text" class="form-control" name="script_cacheline_bits" value="6"/>
+                                                                <span class="help-block"> 请设置缓存行大小，计算公式（位运算）为：2 >>> (val)，单位为 bits！ </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="BS_ScriptThresholdSize" class="control-label col-md-3">设置内存对象大小的最小值（单位：Byte）
+                                                                <span class="required"> * </span>
+                                                            </label>
+                                                            <div class="col-md-4">
+                                                                <input id="BS_ScriptThresholdSize" type="text" class="form-control" name="script_threshold_size" value="1024"/>
+                                                                <span class="help-block"> 凡是小于该大小的内存对象将不会被跟踪到！ </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="BS_ScriptSocketServerIp" class="control-label col-md-3">套接字服务器IP
+                                                                <span class="required"> * </span>
+                                                            </label>
+                                                            <div class="col-md-4">
+                                                                <input id="BS_ScriptSocketServerIp" type="text" class="form-control" name="script_socket_server_ip" value="202.114.6.55"/>
+                                                                <span class="help-block"> 该程序监听了一个套接字服务器，用于传输内存快照！ </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="BS_ScriptSocketServerPort" class="control-label col-md-3">套接字服务器端口
+                                                                <span class="required"> * </span>
+                                                            </label>
+                                                            <div class="col-md-4">
+                                                                <input id="BS_ScriptSocketServerPort" type="text" class="form-control" name="script_socket_server_port" value="3333"/>
+                                                                <span class="help-block"> 该程序监听了一个套接字服务器，用于传输内存快照！ </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="BS_ScriptSocketServerInterval" class="control-label col-md-3">传输间隔（单位：毫秒）
+                                                                <span class="required"> * </span>
+                                                            </label>
+                                                            <div class="col-md-4">
+                                                                <input id="BS_ScriptSocketServerInterval" type="text" class="form-control" name="script_socket_server_interval" value="1000"/>
+                                                                <span class="help-block"> 请设置内存快照传输间隔！ </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="BS_ScriptFuctions" class="control-label col-md-3">内存分配/释放函数
+                                                                <span class="required"> * </span>
+                                                            </label>
+                                                            <div class="col-md-4">
+                                                                <select id="BS_ScriptFuctions" multiple="multiple" class="multi-select" name="script_functions">
+                                                                    <optgroup label="alloc"></optgroup>
+                                                                    <optgroup label="free"></optgroup>
+                                                                </select>
+                                                                <span class="help-block"> 请选择需要跟踪的函数入口。 </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="BS_ScriptPath" class="control-label col-md-3">启动脚本绝对路径
+                                                                <span class="required"> * </span>
+                                                            </label>
+                                                            <div class="col-md-4">
+                                                                <input id="BS_ScriptPath" type="text" class="form-control" name="script_base"/>
+                                                                <span class="help-block"> 启动脚本默认放在PinTool目录下的apps/scripts文件夹中，如果不是，则需要修改！ </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="BS_ScriptRun" class="control-label col-md-3">运行启动脚本命令
+                                                                <span class="required"> * </span>
+                                                            </label>
+                                                            <div class="col-md-4">
+                                                                <input id="BS_ScriptRun" type="text" class="form-control" name="script_compile" disabled />
+                                                                <span class="help-block"> 自动生成启动脚本编译的Linux命令。 </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-actions">
+                                                <div class="row">
+                                                    <div class="col-md-offset-3 col-md-9">
+                                                        <a href="javascript:;" class="btn default button-previous">
+                                                            <i class="fa fa-angle-left"></i> 上一步 </a>
+                                                        <a href="javascript:;" class="btn btn-outline green button-next"> 下一步
+                                                            <i class="fa fa-angle-right"></i>
+                                                        </a>
+                                                        <a href="/realtime" class="btn green button-submit"> 运行程序
+                                                            <i class="fa fa-check"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- END CONTENT BODY -->
+            </div>
+            <!-- END CONTENT -->
+        </div>
+        <!-- END CONTAINER -->
+        <!-- BEGIN FOOTER -->
+        <div class="page-footer">
+            <div class="page-footer-inner"> 2019 &copy; Visualization App by lzc.
+            </div>
+            <div class="scroll-to-top">
+                <i class="icon-arrow-up"></i>
+            </div>
+        </div>
+        <!-- END FOOTER -->
+        <!--[if lt IE 9]>
+<script th:src="@{/assets/global/plugins/respond.min.js}"></script>
+<script th:src="@{/assets/global/plugins/excanvas.min.js}"></script>
+<![endif]-->
+        <!-- BEGIN CORE PLUGINS -->
+        <script th:src="@{/assets/global/plugins/jquery.min.js}" type="text/javascript"></script>
+        <script th:src="@{/assets/global/plugins/bootstrap/js/bootstrap.min.js}" type="text/javascript"></script>
+        <script th:src="@{/assets/global/plugins/js.cookie.min.js}" type="text/javascript"></script>
+        <script th:src="@{/assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js}" type="text/javascript"></script>
+        <script th:src="@{/assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js}" type="text/javascript"></script>
+        <script th:src="@{/assets/global/plugins/jquery.blockui.min.js}" type="text/javascript"></script>
+        <script th:src="@{/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js}" type="text/javascript"></script>
+        <!-- END CORE PLUGINS -->
+        <!-- BEGIN PAGE LEVEL PLUGINS -->
+        <script th:src="@{/assets/global/plugins/jquery-validation/js/jquery.validate.min.js}" type="text/javascript"></script>
+        <script th:src="@{/assets/global/plugins/jquery-validation/js/additional-methods.min.js}" type="text/javascript"></script>
+        <script th:src="@{/assets/global/plugins/bootstrap-wizard/jquery.bootstrap.wizard.min.js}" type="text/javascript"></script>
+        <script th:src="@{/assets/global/plugins/jquery.input-ip-address-control-1.0.min.js}" type="text/javascript"></script>
+        <script th:src="@{/assets/global/plugins/bootstrap-select/js/bootstrap-select.min.js}" type="text/javascript"></script>
+        <script th:src="@{/assets/global/plugins/jquery-multi-select/js/jquery.multi-select.js}" type="text/javascript"></script>
+        <script th:src="@{/assets/global/plugins/select2/js/select2.full.min.js}" type="text/javascript"></script>
+        <!-- END PAGE LEVEL PLUGINS -->
+        <!-- BEGIN THEME GLOBAL SCRIPTS -->
+        <script th:src="@{/assets/global/scripts/app.min.js}" type="text/javascript"></script>
+        <!-- END THEME GLOBAL SCRIPTS -->
+        <!-- BEGIN PAGE LEVEL SCRIPTS -->
+        <script th:src="@{/own/scripts/global.js}" type="text/javascript"></script>
+        <script th:src="@{/own/scripts/bootstrap.js}" type="text/javascript"></script>
+        <!-- END PAGE LEVEL SCRIPTS -->
+        <!-- BEGIN THEME LAYOUT SCRIPTS -->
+        <script th:src="@{/assets/layouts/layout/scripts/layout.min.js}" type="text/javascript"></script>
+        <script th:src="@{/assets/layouts/layout/scripts/demo.min.js}" type="text/javascript"></script>
+        <script th:src="@{/assets/layouts/global/scripts/quick-sidebar.min.js}" type="text/javascript"></script>
+        <!-- END THEME LAYOUT SCRIPTS -->
+    </body>
+
+</html>

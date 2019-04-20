@@ -1,7 +1,7 @@
 package com.cgcl.common.componet;
 
-import com.cgcl.web.domain.entity.AllocFunction;
-import com.cgcl.web.repository.AllocFunctionRepository;
+import com.cgcl.web.domain.entity.AllocFreeFunction;
+import com.cgcl.web.repository.AllocFreeFunctionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -20,10 +20,10 @@ import org.springframework.stereotype.Component;
 @Order(1)
 public class InitAllocFunctionData implements ApplicationRunner {
 
-    private final AllocFunctionRepository allocFunctionRepo;
+    private final AllocFreeFunctionRepository allocFunctionRepo;
 
     @Autowired
-    public InitAllocFunctionData(AllocFunctionRepository allocFunctionRepo) {
+    public InitAllocFunctionData(AllocFreeFunctionRepository allocFunctionRepo) {
         this.allocFunctionRepo = allocFunctionRepo;
     }
 
@@ -31,18 +31,26 @@ public class InitAllocFunctionData implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
 
         // 内存分配函数
-        AllocFunction a1 = new AllocFunction("malloc", -1, 0, -1, false);
-        allocFunctionRepo.save(a1);
-        allocFunctionRepo.save(new AllocFunction("calloc", 0, 1, -1, false));
-        allocFunctionRepo.save(new AllocFunction("realloc", -1, 1, -1, false));
-        allocFunctionRepo.save(new AllocFunction("valloc", -1, 0, -1, false));
-        allocFunctionRepo.save(new AllocFunction("pvalloc", -1, 0, -1, false));
-        allocFunctionRepo.save(new AllocFunction("hme_alloc_dram", -1, 0, -1, false));
-        allocFunctionRepo.save(new AllocFunction("hme_alloc_nvm", -1, 0, -1, false));
+        if (allocFunctionRepo.findByNameEquals("malloc") == null)
+            allocFunctionRepo.save(new AllocFreeFunction("malloc", -1, 0, -1, false, "alloc"));
+        if (allocFunctionRepo.findByNameEquals("calloc") == null)
+            allocFunctionRepo.save(new AllocFreeFunction("calloc", 0, 1, -1, false, "alloc"));
+        if (allocFunctionRepo.findByNameEquals("realloc") == null)
+            allocFunctionRepo.save(new AllocFreeFunction("realloc", -1, 1, -1, false, "alloc"));
+        if (allocFunctionRepo.findByNameEquals("valloc") == null)
+            allocFunctionRepo.save(new AllocFreeFunction("valloc", -1, 0, -1, false, "alloc"));
+        if (allocFunctionRepo.findByNameEquals("pvalloc") == null)
+            allocFunctionRepo.save(new AllocFreeFunction("pvalloc", -1, 0, -1, false, "alloc"));
+        if (allocFunctionRepo.findByNameEquals("hme_alloc_dram") == null)
+            allocFunctionRepo.save(new AllocFreeFunction("hme_alloc_dram", -1, 0, -1, false, "alloc"));
+        if (allocFunctionRepo.findByNameEquals("hme_alloc_nvm") == null)
+            allocFunctionRepo.save(new AllocFreeFunction("hme_alloc_nvm", -1, 0, -1, false, "alloc"));
 
         // 内存释放函数
-        allocFunctionRepo.save(new AllocFunction("free", -1, -1, 0, false));
-        allocFunctionRepo.save(new AllocFunction("hme_free", -1, -1, 0, false));
+        if (allocFunctionRepo.findByNameEquals("free") == null)
+            allocFunctionRepo.save(new AllocFreeFunction("free", -1, -1, 0, false, "free"));
+        if (allocFunctionRepo.findByNameEquals("hme_free") == null)
+            allocFunctionRepo.save(new AllocFreeFunction("hme_free", -1, -1, 0, false, "free"));
 
     }
 }

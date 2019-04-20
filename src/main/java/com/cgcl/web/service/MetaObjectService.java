@@ -20,4 +20,8 @@ public interface MetaObjectService {
     MetaObject getById(Long id);
 
     List<MetaObject> getListByIds(String[] metaObjIds);
+
+    List<MetaObject> getListByExpId(Long expId);
+
+    Long countByExpId(Long expId);
 }

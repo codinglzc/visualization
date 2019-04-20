@@ -22,13 +22,13 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @Entity
-public class AllocFunction implements Serializable {
+public class AllocFreeFunction implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // 自增长ID
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @NotNull
     private String name;
@@ -45,13 +45,17 @@ public class AllocFunction implements Serializable {
     @NotNull
     private Boolean isInternal;
 
-    public AllocFunction(@NotNull String name, @NotNull Integer argIdItemSize, @NotNull Integer argIdItemNum,
-                         @NotNull Integer argIdPtrIndex, @NotNull Boolean isInternal) {
+    @NotNull
+    private String type;
+
+    public AllocFreeFunction(@NotNull String name, @NotNull Integer argIdItemSize, @NotNull Integer argIdItemNum,
+                             @NotNull Integer argIdPtrIndex, @NotNull Boolean isInternal, @NotNull String type) {
         this.name = name;
         this.argIdItemSize = argIdItemSize;
         this.argIdItemNum = argIdItemNum;
         this.argIdPtrIndex = argIdPtrIndex;
         this.isInternal = isInternal;
+        this.type = type;
     }
 
     @Override
