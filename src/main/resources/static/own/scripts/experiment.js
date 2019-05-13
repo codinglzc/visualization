@@ -1069,49 +1069,56 @@ var Experiment = function () {
     // ====================== Memory Object Select ======================== //
 
     // ====================== Memory Object HeatMap ======================== //
-    var memHeatmapInit = function () {
-        // x 轴和 y 轴的长度
-        var numOfX = 30;
-        var numOfY = 6;
-        // 记录 cell 是否已经被占用
-        var isHold = createTwoDimensionArray(numOfX, numOfY);
-        // 记录已经出现的内存对象的位置（key：objId，value：[x, y]）
-        var objPos = [];
+    var memScatterInit = function () {
+        var displayKind = "size";
+
+        var symbolSizeFunc = function (value) {
+            //      0：x
+            //      1：y
+            //      2：objInfo
+            //      3：read
+            //      4：write
+            //      5：read_in_cache
+            //      6：strided_read
+            //      7：pointerchasing_read
+            //      8：random_read
+            //      9：size
+            //      10：maxDims
+            var idx = 9;
+            if (displayKind === "read")
+                idx = 3;
+            else if (displayKind === "write")
+                idx = 4;
+            var size = Math.log(value[idx]) * 50.0 / Math.log(value[10][displayKind]);
+            return size < 10 ? 10 : size;
+        };
 
         // heatmap 所需变量
-        var memHeatmap = echarts.init(document.getElementById("EXP_MemHeatmap"), theme);
-
-        var title = "内存对象热力图";
-        var xData = [];
-        for (var i = 0; i < numOfX; i++) {
-            xData.push("");
-        }
-        var yData = [];
-        for (var i = 0; i < numOfY; i++) {
-            yData.push("");
-        }
-
-        var heapmapData = [];
-
-        var visualMapMax = 10;
+        var memScatter = echarts.init(document.getElementById("EXP_MemScatter"), theme);
 
         var option = {
-            // 标题
-            title: {
-                text: title,
-                x: 'center',
+            title: [{
+                text: 'DRAM',
+                x: '23%',
                 y: 0
-            },
-            // 悬浮提示框组件
+            }, {
+                text: 'NVM',
+                x: '72%',
+                y: 0
+            }],
             tooltip: {
                 position: 'top',
+                formatter: function (params, ticket, callback) {
+                    var objInfo = params.data[2];
+                    var rs = [];
+                    rs.push("内存对象 ：" + objInfo.varName + " <br>");
+                    rs.push("地址空间 ：" + "[0x" + objInfo.startAddress + "-" + "0x" + objInfo.endAddress + "]" + " <br>");
+                    rs.push("大小     ：" + Global.formatSize(params.data[9]) + " <br>");
+                    rs.push("读指令数 ：" + params.data[3] + " <br>");
+                    rs.push("写指令数 ：" + params.data[4] + " <br>");
+                    return rs.join("");
+                }
             },
-            animation: false,
-            // 直角坐标系内绘图网格，单个 grid 内最多可以放置上下两个 X 轴，左右两个 Y 轴。
-            grid: {
-                height: '50%', // grid 组件的高度
-            },
-            // 右上角的工具组件
             toolbox: {
                 feature: {
                     dataView: {show: true, readOnly: false},
@@ -1119,78 +1126,81 @@ var Experiment = function () {
                     saveAsImage: {show: true}
                 }
             },
-            // 直角坐标系 grid 中的 x 轴
-            xAxis: {
-                type: 'category',
-                data: xData,
-                splitArea: {show: true,},// 显示分割区域
-                splitLine: {show: false}, // 显示分割线
-                axisLine: {show: false}, // 取消坐标轴线
-                axisTick: {show: false}, // 取消坐标轴刻度
-            },
-            // 直角坐标系 grid 中的 y 轴
-            yAxis: {
-                type: 'category',
-                data: yData,
-                splitArea: {show: true,},// 显示分割区域
-                splitLine: {show: false}, // 显示分割线
-                axisLine: {show: false}, // 取消坐标轴线
-                axisTick: {show: false}, // 取消坐标轴刻度
-            },
-            // 连续型视觉映射组件
-            visualMap: {
-                min: 0,
-                max: visualMapMax,
-                calculable: true,
-                orient: 'horizontal',
-                left: 'center',
-                bottom: '15%',
-                /**
-                 * 指定用数据的『哪个维度』，映射到视觉元素上。默认取 data 中的最后一个维度。
-                 * 0：x
-                 * 1：y
-                 * 2：objId
-                 * 3：read
-                 * 4：write"
-                 * 5：read_in_cache
-                 * 6：strided_read
-                 * 7：pointerchasing_read
-                 * 8：random_read
-                 */
-                dimension: 3,
-                // 修改样式颜色
-                inRange: {
-                    color: ['#ffe9a5', '#ffb243', 'red'],
-                    symbolSize: [30, 100]
-                }
-            },
-            // 系列列表。每个系列通过 type 决定自己的图表类型
-            series: [{
-                name: 'read',
-                type: 'heatmap', // 热力图，必须配合 visualMap 组件使用。
-                data: heapmapData,
-                label: {// cell 上面的数字
+            grid: [
+                {
+                    x: '7%', y: '7%', width: '38%', height: '85%',
                     show: true,
-                    formatter: function (params) {
-                        // 自定义cell上显示的文本
-                        return params.data[3];
-                    }
+                    borderWidth: 2,
+                    // backgroundColor: '#ccc',
                 },
-                itemStyle: {
-                    emphasis: {
-                        shadowBlur: 10, // 图形阴影的模糊大小
-                        shadowColor: 'rgba(0, 0, 0, 0.5)', // 阴影颜色
-                    }
+                {
+                    x2: '7%', y: '7%', width: '38%', height: '85%',
+                    show: true,
+                    borderWidth: 2,
+                    // backgroundColor: '#ccc',
                 },
-                tooltip: { // 自定义悬浮提示框内容
-                    formatter: function (params, ticket, callback) {
-                        return "<b>" + params.data[9] + "</b>" + "<br>read<br>" + params.data[3];
-                    }
+            ],
+            xAxis: [
+                {
+                    gridIndex: 0, min: -1, max: 11,
+                    interval: 1,
+                    splitArea: {show: true},// 显示分割区域
+                    splitLine: {show: false}, // 显示分割线
+                    axisLine: {show: false}, // 取消坐标轴线
+                    axisTick: {show: false}, // 取消坐标轴刻度
+                    axisLabel: {show: false}, // 是否显示坐标轴标签
+                },
+                {
+                    gridIndex: 1, min: -1, max: 11,
+                    interval: 1,
+                    splitArea: {show: true},// 显示分割区域
+                    splitLine: {show: false}, // 显示分割线
+                    axisLine: {show: false}, // 取消坐标轴线
+                    axisTick: {show: false}, // 取消坐标轴刻度
+                    axisLabel: {show: false}, // 是否显示坐标轴标签
+                },
+            ],
+            yAxis: [
+                {
+                    gridIndex: 0, min: -1, max: 11,
+                    interval: 1,
+                    splitArea: {show: true},// 显示分割区域
+                    splitLine: {show: false}, // 显示分割线
+                    axisLine: {show: false}, // 取消坐标轴线
+                    axisTick: {show: false}, // 取消坐标轴刻度
+                    axisLabel: {show: false}, // 是否显示坐标轴标签
+                },
+                {
+                    gridIndex: 1, min: -1, max: 11,
+                    interval: 1,
+                    splitArea: {show: true},// 显示分割区域
+                    splitLine: {show: false}, // 显示分割线
+                    axisLine: {show: false}, // 取消坐标轴线
+                    axisTick: {show: false}, // 取消坐标轴刻度
+                    axisLabel: {show: false}, // 是否显示坐标轴标签
+                },
+            ],
+            series: [
+                {
+                    name: 'DRAM',
+                    type: 'scatter',
+                    xAxisIndex: 0,
+                    yAxisIndex: 0,
+                    data: [],
+                    symbolSize: symbolSizeFunc,
+                },
+                {
+                    name: 'NVM',
+                    type: 'scatter',
+                    xAxisIndex: 1,
+                    yAxisIndex: 1,
+                    data: [],
+                    symbolSize: symbolSizeFunc,
                 }
-            }]
+            ],
         };
 
-        memHeatmap.setOption(option);
+        memScatter.setOption(option);
 
         // 刷新热力图事件
         selectedChangeEvent.addFunc("heatmap", function (extend) {
@@ -1223,22 +1233,110 @@ var Experiment = function () {
                 });
             });
 
-            // 修改 heapmapData
-            heapmapData = []; // 先清空
+            // 求出所有Dim的最大值
+            var maxDims = {
+                "read": 0,
+                "write": 0,
+                "read_in_cache": 0,
+                "strided_read": 0,
+                "pointerchasing_read": 0,
+                "random_read": 0,
+                "size": 0,
+            };
             for (var objId in objs) {
-                var obj = objs[objId];
-                var cell = getCell(objId);
-                cell.push(obj["metaObject"]["id"]);
-                cell.push(obj["read"]);
-                cell.push(obj["write"]);
-                cell.push(obj["read_in_cache"]);
-                cell.push(obj["strided_read"]);
-                cell.push(obj["pointerchasing_read"]);
-                cell.push(obj["random_read"]);
-                cell.push(obj["metaObject"]["varName"]);
-                heapmapData.push(cell);
-                visualMapMax = Math.max(visualMapMax, obj["read"], obj["write"]);
-                // 更新 memObjWRData 并刷新 Pie
+                var accessVal = objs[objId];
+                var objInfo = accessVal["metaObject"];
+                maxDims["read"] = accessVal["read"] > maxDims["read"] ? accessVal["read"] : maxDims["read"];
+                maxDims["write"] = accessVal["write"] > maxDims["write"] ? accessVal["write"] : maxDims["write"];
+                maxDims["read_in_cache"] = accessVal["read_in_cache"] > maxDims["read_in_cache"] ? accessVal["read_in_cache"] : maxDims["read_in_cache"];
+                maxDims["strided_read"] = accessVal["strided_read"] > maxDims["strided_read"] ? accessVal["strided_read"] : maxDims["strided_read"];
+                maxDims["pointerchasing_read"] = accessVal["pointerchasing_read"] > maxDims["pointerchasing_read"] ? accessVal["pointerchasing_read"] : maxDims["pointerchasing_read"];
+                maxDims["random_read"] = accessVal["random_read"] > maxDims["random_read"] ? accessVal["random_read"] : maxDims["random_read"];
+                maxDims["size"] = objInfo["size"] > maxDims["size"] ? objInfo["size"] : maxDims["size"];
+            }
+
+            // 计算DRAM和NVM两种内存对象的虚拟地址的最小值和最大值
+            var dramMin = "", dramMax = "", nvmMin = "", nvmMax = "";
+            for (var objId in objs) {
+                var objInfo = objs[objId]["metaObject"];
+                var allocType = objInfo["allocType"];
+                if (allocType === "NVM") {
+                    if (nvmMin === "") {
+                        nvmMin = objInfo["startAddress"];
+                        nvmMax = objInfo["endAddress"];
+                    } else {
+                        nvmMin = parseInt(nvmMin, 16) < parseInt(objInfo["startAddress"], 16) ? nvmMin : objInfo["startAddress"];
+                        nvmMax = parseInt(nvmMax, 16) > parseInt(objInfo["endAddress"], 16) ? nvmMax : objInfo["endAddress"];
+                    }
+                } else {
+                    if (dramMin === "") {
+                        dramMin = objInfo["startAddress"];
+                        dramMax = objInfo["endAddress"];
+                    } else {
+                        dramMin = parseInt(dramMin, 16) < parseInt(objInfo["startAddress"], 16) ? dramMin : objInfo["startAddress"];
+                        dramMax = parseInt(dramMax, 16) > parseInt(objInfo["endAddress"], 16) ? dramMax : objInfo["endAddress"];
+                    }
+                }
+            }
+
+            // 填充series数据
+            var seriesDatas = [];
+            seriesDatas.push([]);
+            seriesDatas.push([]);
+            for (var objId in objs) {
+                var objInfo = objs[objId]["metaObject"];
+                // 计算axis索引
+                var allocType = objInfo["allocType"];
+                var idx = allocType === "NVM" ? 1 : 0;
+                // 计算x，y坐标
+                var addrNum = Math.log((parseInt(objInfo["startAddress"], 16) + parseInt(objInfo["endAddress"], 16)) / 2);
+                var per = 0;
+                if (allocType === "NVM") {
+                    var nvmMaxNum = Math.log(parseInt(nvmMax, 16));
+                    var nvmMinNum = Math.log(parseInt(nvmMin, 16));
+                    per = (addrNum - nvmMinNum) * 100.0 / (nvmMaxNum - nvmMinNum);
+                } else {
+                    var dramMaxNum = Math.log(parseInt(dramMax, 16));
+                    var dramMinNum = Math.log(parseInt(dramMin, 16));
+                    per = (addrNum - dramMinNum) * 100.0 / (dramMaxNum - dramMinNum);
+                }
+                var oldPer = per;
+                var x = 0, y = 9.5;
+                while (per > 10) {
+                    y = y - 1;
+                    per = per - 10;
+                }
+                x = per;
+                // 计算cell
+                var accessVal = objs[objId];
+                //      0：x
+                //      1：y
+                //      2：metaInfo
+                //      3：read
+                //      4：write
+                //      5：read_in_cache
+                //      6：strided_read
+                //      7：pointerchasing_read
+                //      8：random_read
+                //      9：size
+                //      10：maxDims
+                //      11：per
+                var cell = [
+                    x,
+                    y,
+                    accessVal["metaObject"],
+                    accessVal["read"],
+                    accessVal["write"],
+                    accessVal["read_in_cache"],
+                    accessVal["strided_read"],
+                    accessVal["pointerchasing_read"],
+                    accessVal["random_read"],
+                    objInfo["size"],
+                    maxDims,
+                    oldPer,
+                ];
+                seriesDatas[idx].push(cell);
+                // 跟新 memObjWRData 并刷新 Pie
                 if (cell[2] === memObjWRData[2]) {
                     memObjWRData = cell;
                     if (memObjPieKind === "R") {
@@ -1248,59 +1346,62 @@ var Experiment = function () {
                     }
                 }
             }
-            // 刷新 heapmap
-            option.series[0].data = heapmapData;
-            option.visualMap.max = visualMapMax;
-            memHeatmap.setOption(option);
+            $.each(seriesDatas, function (idx, data) {
+                // 按照per排序
+                for (var i = data.length - 1; i > 0; i--) {
+                    for (var j = 0; j < i; j++) {
+                        if (data[j][11] > data[j + 1][11]) {
+                            var temp = data[j];
+                            data[j] = data[j + 1];
+                            data[j + 1] = temp;
+                        }
+                    }
+                }
+                // 调整位置
+                for (var i = 1; i < data.length; i++) {
+                    while (data[i][11] < data[i - 1][11])
+                        data[i][11]++;
+                    if (data[i][11] - data[i - 1][11] < 1) {
+                        data[i][11]++;
+                    }
+                }
+                while (data.length > 0 && data[data.length - 1][11] > 100) {
+                    data[data.length - 1][11]--;
+                    for (var i = data.length - 2; i > 0; i--) {
+                        while (data[i][11] > data[i + 1][11] ||
+                        data[i + 1][11] - data[i][11] < 1) {
+                            data[i][11]--;
+                        }
+                    }
+                }
+                // 重新计算x,y值
+                for (var i = 0; i < data.length; i++) {
+                    var per = data[i][11];
+                    var x = 0, y = 9.5;
+                    while (per > 10) {
+                        y = y - 1;
+                        per = per - 10;
+                    }
+                    x = per;
+                    data[i][0] = x;
+                    data[i][1] = y;
+                }
+                option.series[idx].data = data;
+            });
+            console.log(option);
+            memScatter.setOption(option);
         });
-
-        /**
-         * 返回一个未使用的 cell
-         * @param objId 内存对象id
-         * @returns {Array}
-         * @private
-         */
-        var getCell = function (objId) {
-            var cell = [];
-            if (objPos.hasOwnProperty(objId)) {
-                cell.push(objPos[objId][0]);
-                cell.push(objPos[objId][1]);
-            } else {
-                var x, y;
-                do {
-                    x = Math.floor(Math.random() * numOfX);
-                    y = Math.floor(Math.random() * numOfY);
-                } while (isHold[x][y] !== -1);
-                isHold[x][y] = objId;
-                cell.push(x);
-                cell.push(y);
-                var objP = [];
-                objP.push(x);
-                objP.push(y);
-                objPos[objId] = objP;
-            }
-            return cell;
-        };
 
         // 绑定 RT_MemSelect 选定事件
         $('#EXP_MemSelect').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
-            var dim = $("#EXP_MemSelect").val(); // 维度
-            var text = $("#EXP_MemSelect").find("option:selected").text();
-            option.visualMap.dimension = dim;
-            option.series[0].name = text;
-            option.series[0].label.formatter = function (params) {
-                return params.data[dim];
-            };
-            option.series[0].tooltip.formatter = function (params, ticket, callback) {
-                return "<b>" + params.data[9] + "</b>" + "<br>" + text + "<br>" + params.data[dim];
-            };
-            memHeatmap.setOption(option);
+            displayKind = $("#EXP_MemSelect").val();
+            memScatter.setOption(option);
         });
 
         // 绑定鼠标点击事件
-        memHeatmap.on('click', function (params) {
+        memScatter.on('click', function (params) {
             if (params.componentType === "series") {
-                if (params.seriesType === "heatmap") {
+                if (params.seriesType === "scatter") {
                     // 当点击 cell 时，显示该内存对象的 Pie 图
                     var data = params.data;
                     memObjWRData = data;
@@ -1323,15 +1424,18 @@ var Experiment = function () {
 
     /**
      * 渲染 memObj Read Pie
-     * @param data  0：x
-     *              1：y
-     *              2：metaObject
-     *              3：read
-     *              4：write"
-     *              5：read_in_cache
-     *              6：strided_read
-     *              7：pointerchasing_read
-     *              8：random_read
+     * @param data  //      0：x
+     //      1：y
+     //      2：metaInfo
+     //      3：read
+     //      4：write
+     //      5：read_in_cache
+     //      6：strided_read
+     //      7：pointerchasing_read
+     //      8：random_read
+     //      9：size
+     //      10：maxDims
+     //      11：per
      * @private
      */
     var renderOneMemObjReadPie = function (data) {
@@ -1339,13 +1443,14 @@ var Experiment = function () {
         pieData.push({value: data[5], name: "读（缓存命中）"});
         pieData.push({value: data[6], name: "读（固定间隔读）"});
         pieData.push({value: data[7], name: "读（指针访问读）"});
-        pieData.push({value: data[3] - data[5] - data[6] - data[7], name: "读（随机读）"});
+        pieData.push({value: data[8], name: "读（随机读）"});
+        // pieData.push({value: data[3] - data[5] - data[6] - data[7], name: "读（随机读）"});
 
         var oneMemObjPie = echarts.getInstanceByDom(document.getElementById("EXP_OneMemObjPie"));
         var option = oneMemObjPie.getOption();
         option.series[0].data = pieData;
         option.series[0].name = "read pie";
-        option.title[0].text = data[9];
+        option.title[0].text = data[2]["varName"];
 
         oneMemObjPie.setOption(option);
 
@@ -1354,15 +1459,18 @@ var Experiment = function () {
 
     /**
      * 渲染 memObj Read/Write Pie
-     * @param data  0：x
-     *              1：y
-     *              2：metaObject
-     *              3：read
-     *              4：write"
-     *              5：read_in_cache
-     *              6：strided_read
-     *              7：pointerchasing_read
-     *              8：random_read
+     * @param data  //      0：x
+     //      1：y
+     //      2：metaInfo
+     //      3：read
+     //      4：write
+     //      5：read_in_cache
+     //      6：strided_read
+     //      7：pointerchasing_read
+     //      8：random_read
+     //      9：size
+     //      10：maxDims
+     //      11：per
      * @private
      */
     var renderOneMemObjReadWritePie = function (data) {
@@ -1374,7 +1482,7 @@ var Experiment = function () {
         var option = oneMemObjPie.getOption();
         option.series[0].data = pieData;
         option.series[0].name = "read/write pie";
-        option.title[0].text = data[9];
+        option.title[0].text = data[2]["varName"];
 
         oneMemObjPie.setOption(option);
 
@@ -1445,28 +1553,6 @@ var Experiment = function () {
         oneMemObjPie.setOption(option);
     };
     // ====================== One Memory Object Read Sector ======================== //
-
-    /**
-     * 生成一个初始值为 -1 的二维数组
-     * @param x 一维数
-     * @param y 二维数
-     * @returns {Array[][]}
-     * @private
-     */
-    var createTwoDimensionArray = function (x, y) {
-        var rs = [];
-        for (var i = 0; i < x; i++) {
-            rs[i] = [];
-            for (var j = 0; j < y; j++) {
-                rs[i][j] = -1;
-            }
-        }
-        return rs;
-    };
-
-    // ---------------------------------- DB Utils Begin ----------------------------------- //
-
-    // ---------------------------------- DB Utils End ----------------------------------- //
 
     // ---------------------------------- EXP_TimelineChart init Begin ----------------------------------- //
     var timelineChartOption = {
@@ -1641,9 +1727,9 @@ var Experiment = function () {
         });
         timelineChartOption.legend.data = legendData;
         timelineChartOption.series = series;
-        if(kind.indexOf("Ratio") !== -1){
+        if (kind.indexOf("Ratio") !== -1) {
             timelineChartOption.yAxis.name = "百分比（%）";
-        }else {
+        } else {
             timelineChartOption.yAxis.name = "数量（个）";
         }
         // console.log(timelineChartOption);
@@ -1661,7 +1747,7 @@ var Experiment = function () {
             initMemTree();
             initMemTable();
             initMemSelect();
-            memHeatmapInit();
+            memScatterInit();
             oneMemObjBtnInit();
             oneMemObjPieInit();
             lineInit();
@@ -1696,6 +1782,7 @@ var Experiment = function () {
         },
         chooseExpInModalOnclick: function () {
             $("#EXP_Id").attr("data-exp-id", $("#EXP_ExpsTable").bootstrapTable("getSelections")[0]["id"]);
+            $("#EXP_AppName").html($("#EXP_ExpsTable").bootstrapTable("getSelections")[0]["description"]);
             // 关闭 EXP_ChooseExpModal 模态框
             $("#EXP_ChooseExpModal").modal("hide");
 

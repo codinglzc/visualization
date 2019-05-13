@@ -26,4 +26,5 @@ public interface ThreadMemoryAccessRepository extends JpaRepository<ThreadMemory
     @Transactional
     @Query("delete from ThreadMemoryAccess t where t.motnId in (?1)")
     void deleteBatchByMotnIdsIn(List<Long> motnIds);
+
 }

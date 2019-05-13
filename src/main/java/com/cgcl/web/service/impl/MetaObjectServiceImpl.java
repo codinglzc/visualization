@@ -38,6 +38,11 @@ public class MetaObjectServiceImpl implements MetaObjectService {
     }
 
     @Override
+    public void postBatch(List<MetaObject> metaObjects) {
+        metaObjectRepo.saveAll(metaObjects);
+    }
+
+    @Override
     public MetaObject getById(Long id) {
         return metaObjectRepo.findById(id).orElse(null);
     }

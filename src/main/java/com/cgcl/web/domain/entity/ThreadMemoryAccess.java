@@ -4,10 +4,7 @@ import com.cgcl.common.util.JsonUtils;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 
 /**
@@ -21,6 +18,7 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @Entity
+@Table(indexes = {@Index(columnList = "motnId")})
 public class ThreadMemoryAccess implements Serializable {
 
     private static final long serialVersionUID = 1L;

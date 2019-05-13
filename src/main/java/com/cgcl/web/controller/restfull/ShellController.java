@@ -50,6 +50,7 @@ public class ShellController {
     public Message runExp(@RequestParam("command") String command,
                           @RequestParam("funcs") String funcsStr,
                           @RequestParam("pintool_base") String pintoolPath,
+                          @RequestParam("app_name") String appName,
                           @RequestParam("script_cacheline_bits") String cachelineBits,
                           @RequestParam("script_threshold_size") String thresholdSize,
                           @RequestParam("script_socket_server_ip") String socketServerIp,
@@ -80,7 +81,8 @@ public class ShellController {
         }
         shell.sftp(new ByteArrayInputStream(allocSb.toString().getBytes()), pintoolPath + "/conf/alloc_func.conf");
         shell.sftp(new ByteArrayInputStream(freeSb.toString().getBytes()), pintoolPath + "/conf/free_func.conf");
-        String scriptParams = "cacheline_bits" + " " + cachelineBits +
+        String scriptParams = "app_name" + " " + appName +
+                "\n" + "cacheline_bits" + " " + cachelineBits +
                 "\n" + "threshold_size" + " " + thresholdSize +
                 "\n" + "socket_server_ip" + " " + socketServerIp +
                 "\n" + "socket_server_port" + " " + socketServerPort +

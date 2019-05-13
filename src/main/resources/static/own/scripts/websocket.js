@@ -10,10 +10,12 @@
  */
 var Websocket = function () {
 
-    var ip = "localhost";
-    var port = "8080";
-    var wsurl = "ws://" + ip + ":" + port + "/websocket";
-    var sjurl = "http://" + ip + ":" + port + "/sockjs/websocket";
+    // var ip = "localhost";
+    // var ip = "202.114.6.55";
+    // var port = "8080";
+    var host = window.location.host;
+    var wsurl = "ws://" + host + "/websocket";
+    var sjurl = "http://" + host + "/sockjs/websocket";
 
     var socket;
 

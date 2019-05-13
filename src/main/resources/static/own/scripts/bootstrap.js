@@ -211,13 +211,22 @@ var Bootstrap = function () {
                     var name = data["stdout"][i];
                     if (name === "scripts")
                         continue;
-                    if (name === "test") // 只显示test测试程序，其他测试程序还需要修改程序
-                        $("#BS_App").append("<option value='" + name + "'>" + name + "</option>")
+                    if (name === "test") // 测试程序
+                        $("#BS_App").append("<option value='" + name + "'>" + name + "</option>");
+                    else if (name === "graph500")
+                        $("#BS_App").append("<option value='" + name + "'>" + name + "</option>");
                 }
-                var command = "cd " + $('#BS_AppsBase').val() + "/" + $("#BS_App").val() + " && make all";
-                $('#BS_AppCompile').val(command);
-                $('#BS_ScriptPath').val($('#BS_AppsBase').val() + "/scripts/profiler_" + $("#BS_App").val() + ".sh");
-                $('#BS_ScriptRun').val("cd " + $('#BS_PinToolBase').val() + " && ." + $('#BS_ScriptPath').val().replace($('#BS_PinToolBase').val(), ""));
+                if ($("#BS_App").val() === "test"){
+                    var command = "cd " + $('#BS_AppsBase').val() + "/" + $("#BS_App").val() + " && make all";
+                    $('#BS_AppCompile').val(command);
+                    $('#BS_ScriptPath').val($('#BS_AppsBase').val() + "/scripts/profiler_" + $("#BS_App").val() + ".sh");
+                    $('#BS_ScriptRun').val("cd " + $('#BS_PinToolBase').val() + " && ." + $('#BS_ScriptPath').val().replace($('#BS_PinToolBase').val(), ""));
+                }else if ($("#BS_App").val() === "graph500"){
+                    var command = "cd " + $('#BS_AppsBase').val() + "/" + $("#BS_App").val() + "/src" + " && make";
+                    $('#BS_AppCompile').val(command);
+                    $('#BS_ScriptPath').val($('#BS_AppsBase').val() + "/scripts/profiler_" + $("#BS_App").val() + ".sh");
+                    $('#BS_ScriptRun').val("cd " + $('#BS_PinToolBase').val() + " && ." + $('#BS_ScriptPath').val().replace($('#BS_PinToolBase').val(), ""));
+                }
             } else {
                 alert("获取测试程序失败！");
             }
@@ -299,6 +308,7 @@ var Bootstrap = function () {
                 command: command,
                 funcs: funcsStr,
                 pintool_base: $('#BS_PinToolBase').val(),
+                app_name: $("#BS_App").val(),
                 script_cacheline_bits: $('#BS_ScriptCachelineBits').val(),
                 script_threshold_size: $('#BS_ScriptThresholdSize').val(),
                 script_socket_server_ip: $('#BS_ScriptSocketServerIp').val(),
@@ -357,6 +367,11 @@ var Bootstrap = function () {
         $('#BS_App', form).change(function () {
             if ($('#BS_App').val() === "test") {
                 var command = "cd " + $('#BS_AppsBase').val() + "/" + $(this).val() + " && make all";
+                $('#BS_AppCompile').val(command);
+                $('#BS_ScriptPath').val($('#BS_AppsBase').val() + "/scripts/profiler_" + $("#BS_App").val() + ".sh");
+                $('#BS_ScriptRun').val("cd " + $('#BS_PinToolBase').val() + " && ." + $('#BS_ScriptPath').val().replace($('#BS_PinToolBase').val(), ""));
+            }else if ($("#BS_App").val() === "graph500"){
+                var command = "cd " + $('#BS_AppsBase').val() + "/" + $(this).val() + "/src" + " && make";
                 $('#BS_AppCompile').val(command);
                 $('#BS_ScriptPath').val($('#BS_AppsBase').val() + "/scripts/profiler_" + $("#BS_App").val() + ".sh");
                 $('#BS_ScriptRun').val("cd " + $('#BS_PinToolBase').val() + " && ." + $('#BS_ScriptPath').val().replace($('#BS_PinToolBase').val(), ""));

@@ -17,6 +17,8 @@ public interface MetaObjectService {
 
     void putByIdSelective(MetaObject metaObject);
 
+    void postBatch(List<MetaObject> metaObjects);
+
     MetaObject getById(Long id);
 
     List<MetaObject> getListByIds(String[] metaObjIds);

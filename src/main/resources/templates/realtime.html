@@ -116,7 +116,7 @@
                 <li class="nav-item">
                     <a href="/experiment">
                         <i class="icon-pie-chart"></i>
-                        <span class="title">实验（回看）</span>
+                        <span class="title">实验（回放）</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -272,13 +272,13 @@
                             <i class="fa"></i>
                         </div>
                         <div class="details-left">
-                            <div class="number"> 0</div>
-                            <div class="desc"> Info</div>
+                            <div id="RT_AppName" class="number"></div>
+                            <div class="desc"> 测试程序</div>
                         </div>
-                        <div class="details-right">
-                            <div class="number"> 0</div>
-                            <div class="desc"> Info</div>
-                        </div>
+                        <!--<div class="details-right">-->
+                        <!--<div class="number"> 0</div>-->
+                        <!--<div class="desc"> Info</div>-->
+                        <!--</div>-->
                         <a class="more" href="#"> 更多
                             <i class="m-icon-swapright m-icon-white"></i>
                         </a>
@@ -387,14 +387,11 @@
                                 </div>
                                 <div class="col-md-9 col-sm-12">
                                     <select id="RT_MemSelect" class="bs-select form-control input-small">
-                                        <option value="3">读（总和）</option>
-                                        <option value="4">写</option>
-                                        <option value="5">读（缓存命中）</option>
-                                        <option value="6">读（固定间隔读）</option>
-                                        <option value="7">读（指针访问读）</option>
-                                        <option value="8">读（随机读）</option>
+                                        <option value="size">大小</option>
+                                        <option value="read">读次数</option>
+                                        <option value="write">写次数</option>
                                     </select>
-                                    <div id="RT_MemHeatmap" style="height: 400px; width: 100%;"></div>
+                                    <div id="RT_MemScatter" style="height: 400px; width: 100%;"></div>
                                 </div>
                             </div>
                         </div>

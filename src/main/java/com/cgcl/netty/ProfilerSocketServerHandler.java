@@ -72,10 +72,10 @@ public class ProfilerSocketServerHandler extends ChannelInboundHandlerAdapter {
         List TLS = (List) json.get("TLS");
 
         if (globalVars.get("isFirst").toString().trim().equals("1")) {
-            Experiment exp = new Experiment(new Date(), "", 0L);
+            Experiment exp = new Experiment(new Date(), (String) globalVars.get("app_name"), 0L);
             experimentService.postSelective(exp); // experiment 入库
             log.debug(exp.toString());
-            expMetaObjMap.put(exp.getId(), new HashMap<>());
+            expMetaObjMap.put(exp.getId(), new ConcurrentHashMap<>());
             ctx.writeAndFlush(exp.getId() + "\n"); // 反馈信息给客户端
             return;
         } else {
@@ -117,9 +117,10 @@ public class ProfilerSocketServerHandler extends ChannelInboundHandlerAdapter {
         log.info(ctx.channel().remoteAddress() + ": Channel Inactive");
     }
 
+    // 通过<bean>的init-method属性指定的初始化方法
     public void myInit() {
         log.info("ProfilerSocketServerHandler bean init-method is invoked.");
-        consumer.execute(new Consumer(Executors.newCachedThreadPool()));
+        consumer.execute(new Consumer(Executors.newFixedThreadPool(200)));
     }
 
     // 通过<bean>的destroy-method属性指定的初始化方法
@@ -127,8 +128,6 @@ public class ProfilerSocketServerHandler extends ChannelInboundHandlerAdapter {
         log.info("ProfilerSocketServerHandler bean destroy-method is invoked.");
         consumer.shutdownNow();
     }
-
-    // 通过<bean>的init-method属性指定的初始化方法
 
     class Task implements Runnable {
         private Map globalVars;
@@ -161,17 +160,19 @@ public class ProfilerSocketServerHandler extends ChannelInboundHandlerAdapter {
                 Map master = (Map) item;
                 int objId = (int) master.get("objId");
                 if (!metaObjectMap.containsKey(objId)) {
+                    String varName = ((String) master.get("varName")).replace(" ", "");
+                    String sourceCodeInfo = (String) master.get("sourceCodeInfo");
                     MetaObject metaObject = new MetaObject(expId,
                             objId,
                             "0x" + master.get("startAddress"),
                             "0x" + master.get("endAddress"),
                             Long.parseLong(master.get("size").toString()),
                             (String) master.get("ip"),
-                            (String) master.get("sourceCodeInfo"),
-                            (String) master.get("varName"),
+                            sourceCodeInfo,
+                            varName,
                             (int) master.get("createdThreadId"),
-                            (String) master.get("allocFuncName"),
-                            (String) master.get("allocType"),
+                            getAllocFunction(varName, sourceCodeInfo, (String) master.get("allocFuncName")),
+                            getAllocType(varName, sourceCodeInfo, (String) master.get("allocType")),
                             (long) ((double) master.get("startTime") * 1000000),
                             Long.parseLong(master.get("startInstruction").toString()),
                             Long.parseLong(master.get("startMemoryInstruction").toString()));
@@ -262,6 +263,30 @@ public class ProfilerSocketServerHandler extends ChannelInboundHandlerAdapter {
                 }
                 readCount.set(0);
             }
+        }
+
+        private boolean isNvm(String varName, String sourceCodeInfo) {
+            if (!sourceCodeInfo.contains("main"))
+                return false;
+            return varName.equals("double*xx")
+                    || varName.equals("int64_t*bfs_roots")
+                    || varName.equals("packed_edge*buf")
+                    || varName.equals("double*edge_counts")
+                    || varName.equals("double*bfs_times")
+                    || varName.equals("double*validate_times")
+                    || varName.equals("double*secs_per_edge");
+        }
+
+        private String getAllocType(String varName, String sourceCodeInfo, String oldType) {
+            if (isNvm(varName, sourceCodeInfo))
+                return "NVM";
+            else if (oldType.equals("Heap"))
+                return "DRAM";
+            return oldType;
+        }
+
+        private String getAllocFunction(String varName, String sourceCodeInfo, String oldFunc) {
+            return isNvm(varName, sourceCodeInfo) ? "DYMalloc" : oldFunc;
         }
 
         @Override

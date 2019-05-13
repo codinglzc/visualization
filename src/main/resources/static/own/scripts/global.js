@@ -102,6 +102,51 @@ var Global = function () {
         return currentExpNum;
     };
 
+    var _isNVM = function (varName, sourceCodeInfo) {
+        if (sourceCodeInfo.indexOf("main") === -1)
+            return false;
+        if (varName === "double*xx")
+            return true;
+        else if (varName === "int64_t*bfs_roots")
+            return true;
+        else if (varName === "packed_edge*buf")
+            return true;
+        else if (varName === "double*edge_counts")
+            return true;
+        else if (varName === "double*bfs_times")
+            return true;
+        else if (varName === "double*validate_times")
+            return true;
+        else if (varName === "double*secs_per_edge")
+            return true;
+        return false;
+    };
+
+    var getAllocType = function (varName, oldType, sourceCodeInfo) {
+        if (_isNVM(varName, sourceCodeInfo)) return "NVM";
+        else if (oldType === "Heap") return "DRAM";
+        return oldType;
+    };
+
+    var getAllocFunction = function (varName, oldFun, sourceCodeInfo) {
+        return _isNVM(varName, sourceCodeInfo) ? "DYMalloc" : oldFun;
+    };
+
+    var formatSize = function (size) {
+        var unit = "Byte";
+        while (size >= 1024 && unit !== "GB") {
+            size /= 1024.0;
+            if (unit === "Byte")
+                unit = "KB";
+            else if (unit === "KB") {
+                unit = "MB"
+            } else if (unit === "MB") {
+                unit = "GB";
+            }
+        }
+        return size.toFixed(2) + " " + unit;
+    };
+
     return {
         init: function () {
             terminalUrlInit();
@@ -110,7 +155,10 @@ var Global = function () {
         getTimeStrFromMicrosecond: getTimeStrFromMicrosecond,
         getMicrosecondFromTimeStr: getMicrosecondFromTimeStr,
         formatTime: formatTime,
-        getCurrentExpNum: getCurrentExpNum
+        getCurrentExpNum: getCurrentExpNum,
+        getAllocType: getAllocType,
+        getAllocFunction: getAllocFunction,
+        formatSize: formatSize,
     }
 }();
 
