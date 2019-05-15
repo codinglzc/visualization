@@ -47,4 +47,8 @@ public class AllocFreeFunctionControllerTests extends AbstractContiPerf {
         System.out.println(result.getResponse().getContentAsString());
     }
 
+    @Test
+    public void contextLoads() {
+    }
+
 }

@@ -51,4 +51,8 @@ public class MetaObjectControllerTests extends AbstractContiPerf {
 
         System.out.println(result.getResponse().getContentAsString());
     }
+
+    @Test
+    public void contextLoads() {
+    }
 }
