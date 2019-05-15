@@ -1,5 +1,6 @@
 package com.cgcl.common.config;
 
+import com.cgcl.common.componet.AppProps;
 import com.cgcl.common.componet.Shell;
 import com.cgcl.web.domain.entity.SshProperty;
 import com.cgcl.web.repository.SshPropertyRepository;
@@ -23,24 +24,27 @@ public class JSchConfig {
 
     private final SshPropertyRepository sshPropertyRepo;
 
+    private final AppProps appProps;
+
     @Autowired
-    public JSchConfig(SshPropertyRepository sshPropertyRepo) {
+    public JSchConfig(SshPropertyRepository sshPropertyRepo, AppProps appProps) {
         this.sshPropertyRepo = sshPropertyRepo;
+        this.appProps = appProps;
     }
 
     @Bean(initMethod = "myInit", destroyMethod = "myDestory")
     @Order
     public Shell shell() {
-        SshProperty sshProperty;
+        SshProperty sshProperty = appProps.getSsh();
         if (sshPropertyRepo.findAll().size() <= 0) {
-            sshProperty = new SshProperty();
-            sshProperty.setIp("222.20.79.232");
-            sshProperty.setPort(50005);
-            sshProperty.setUsername("lzc");
-            sshProperty.setPassword("liu950302");
             sshPropertyRepo.save(sshProperty);
         } else {
-            sshProperty = sshPropertyRepo.findAll().get(0);
+            SshProperty oldSsh = sshPropertyRepo.findAll().get(0);
+            oldSsh.setIp(sshProperty.getIp());
+            oldSsh.setPort(sshProperty.getPort());
+            oldSsh.setPassword(sshProperty.getPassword());
+            oldSsh.setUsername(sshProperty.getUsername());
+            sshPropertyRepo.save(oldSsh);
         }
         return new Shell(sshProperty);
     }

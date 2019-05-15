@@ -1,5 +1,6 @@
 package com.cgcl.common.componet;
 
+import com.cgcl.web.domain.entity.SshProperty;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -18,4 +19,7 @@ import org.springframework.stereotype.Component;
 public class AppProps {
 
     private String gateoneUrl;
+
+    private SshProperty ssh;
+
 }

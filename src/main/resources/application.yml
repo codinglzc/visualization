@@ -1,6 +1,11 @@
 # custom properties
 app:
   gateoneUrl: https://222.20.79.232:10598/
+  ssh:
+    ip: 222.20.79.232
+    port: 50005
+    username: lzc
+    password: liu950302
 
 
 # app

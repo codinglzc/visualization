@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.cgcl</groupId>
-    <artifactId>demo</artifactId>
+    <artifactId>visualization</artifactId>
     <version>2.0.0</version>
     <packaging>jar</packaging> <!-- 注意：这里是jar，而不是war。传统的web程序都打包成war，但是jar更适合于云平台。 -->
     <name>visualization</name>
