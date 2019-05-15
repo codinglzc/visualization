@@ -119,6 +119,10 @@ public class Shell {
         myInit();
     }
 
+    public SshProperty getSshProperty() {
+        return sshProperty;
+    }
+
     @Data
     @AllArgsConstructor
     public static class ShellResult {

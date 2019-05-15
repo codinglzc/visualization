@@ -106,4 +106,10 @@ public class ShellController {
             return Message.fail();
         }
     }
+
+    @RequestMapping("/getSsh")
+    public Message getSsh(){
+        log.info("GET: /shell/getSsh");
+        return Message.success().add("ssh", shell.getSshProperty());
+    }
 }

@@ -324,6 +324,21 @@ var Bootstrap = function () {
         $('#BS_ProfilerIP').ipAddress();
         $('#BS_ScriptSocketServerIp').ipAddress();
 
+        // 初始化ssh内容
+        $.get("shell/getSsh", function (ret) {
+            if (!Global.checkServerMsg(ret)) {
+                alert("获取Ssh参数失败！");
+            } else {
+                var ssh = ret["extend"]["ssh"];
+                console.log(ssh);
+                $("#BS_ProfilerIP").val(ssh["ip"]);
+                $("#BS_ProfilerPort").val(ssh["port"]);
+                $("#BS_Username").val(ssh["username"]);
+                $("#BS_Password").val(ssh["password"]);
+            }
+        });
+
+
         // 初始化多选框
         $.get("func/allNoPageInfo", function (ret) {
             if (!Global.checkServerMsg(ret)) {
