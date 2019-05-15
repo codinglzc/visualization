@@ -23,8 +23,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ExperimentControllerTests extends AbstractContiPerf {
 
-    @Test
-    @PerfTest(threads = 100, invocations = 10000)
+//    @Test
+//    @PerfTest(threads = 100, invocations = 10000)
     public void getExpAll() throws Exception {
 
         MvcResult result = mockMvc.perform(get("/exp/all")
@@ -37,8 +37,8 @@ public class ExperimentControllerTests extends AbstractContiPerf {
         System.out.println(result.getResponse().getContentAsString());
     }
 
-    @Test
-    @PerfTest(threads = 100, invocations = 10000)
+//    @Test
+//    @PerfTest(threads = 100, invocations = 10000)
     public void getExpById() throws Exception {
 
         MvcResult result = mockMvc.perform(get("/exp/6"))
@@ -47,8 +47,8 @@ public class ExperimentControllerTests extends AbstractContiPerf {
         System.out.println(result.getResponse().getContentAsString());
     }
 
-    @Test
-    @PerfTest(threads = 100, invocations = 10000)
+//    @Test
+//    @PerfTest(threads = 100, invocations = 10000)
     public void getCurrentExpNum() throws Exception {
 
         MvcResult result = mockMvc.perform(get("/exp/getCurrentExpNum"))

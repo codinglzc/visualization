@@ -22,8 +22,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class GlobalVarsControllerTests extends AbstractContiPerf {
 
-    @Test
-    @PerfTest(threads = 100, invocations = 10000)
+//    @Test
+//    @PerfTest(threads = 100, invocations = 10000)
     public void getByTimelineNodeId() throws Exception {
 
         MvcResult result = mockMvc.perform(get("/globalVars/getByTimelineNodeId").param("timelineNodeId", "1705"))

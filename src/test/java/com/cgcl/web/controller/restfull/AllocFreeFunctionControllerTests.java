@@ -23,8 +23,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class AllocFreeFunctionControllerTests extends AbstractContiPerf {
 
-    @Test
-    @PerfTest(threads = 100, invocations = 10000)
+//    @Test
+//    @PerfTest(threads = 100, invocations = 10000)
     public void getAll() throws Exception {
 
         MvcResult result = mockMvc.perform(get("/func/all")
@@ -37,8 +37,8 @@ public class AllocFreeFunctionControllerTests extends AbstractContiPerf {
         System.out.println(result.getResponse().getContentAsString());
     }
 
-    @Test
-    @PerfTest(threads = 100, invocations = 10000)
+//    @Test
+//    @PerfTest(threads = 100, invocations = 10000)
     public void getAllNoPageInfo() throws Exception {
 
         MvcResult result = mockMvc.perform(get("/func/allNoPageInfo"))

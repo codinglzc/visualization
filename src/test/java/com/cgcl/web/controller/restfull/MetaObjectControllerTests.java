@@ -22,8 +22,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class MetaObjectControllerTests extends AbstractContiPerf {
 
-    @Test
-    @PerfTest(threads = 100, invocations = 10000)
+//    @Test
+//    @PerfTest(threads = 100, invocations = 10000)
     public void getMetaObjsByExpId() throws Exception {
 
         MvcResult result = mockMvc.perform(get("/metaObj/byExpId").param("expId", "6"))
@@ -32,8 +32,8 @@ public class MetaObjectControllerTests extends AbstractContiPerf {
         System.out.println(result.getResponse().getContentAsString());
     }
 
-    @Test
-    @PerfTest(threads = 100, invocations = 10000)
+//    @Test
+//    @PerfTest(threads = 100, invocations = 10000)
     public void countByExpId() throws Exception {
 
         MvcResult result = mockMvc.perform(get("/metaObj/countByExpId").param("expId", "6"))
@@ -42,8 +42,8 @@ public class MetaObjectControllerTests extends AbstractContiPerf {
         System.out.println(result.getResponse().getContentAsString());
     }
 
-    @Test
-    @PerfTest(threads = 100, invocations = 1000)
+//    @Test
+//    @PerfTest(threads = 100, invocations = 1000)
     public void getMetaObjsWithAggregateInfoByIds() throws Exception {
 
         MvcResult result = mockMvc.perform(get("/metaObj/getMetaObjsWithAggregateInfoByIds").param("ids", "456"))

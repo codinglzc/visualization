@@ -22,8 +22,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class TimelineControllerTests extends AbstractContiPerf {
 
-    @Test
-    @PerfTest(threads = 100, invocations = 10000)
+//    @Test
+//    @PerfTest(threads = 100, invocations = 10000)
     public void getTimelineNodesByExpId() throws Exception {
 
         MvcResult result = mockMvc.perform(get("/timeline/getAllByExpId").param("expId", "6"))
@@ -32,8 +32,8 @@ public class TimelineControllerTests extends AbstractContiPerf {
         System.out.println(result.getResponse().getContentAsString());
     }
 
-    @Test
-    @PerfTest(threads = 100, invocations = 10000)
+//    @Test
+//    @PerfTest(threads = 100, invocations = 10000)
     public void getTimelineNodeById() throws Exception {
 
         MvcResult result = mockMvc.perform(get("/timeline/getById").param("expId", "1717"))
@@ -42,8 +42,8 @@ public class TimelineControllerTests extends AbstractContiPerf {
         System.out.println(result.getResponse().getContentAsString());
     }
 
-    @Test
-    @PerfTest(threads = 100, invocations = 10000)
+//    @Test
+//    @PerfTest(threads = 100, invocations = 10000)
     public void countByExpId() throws Exception {
 
         MvcResult result = mockMvc.perform(get("/timeline/countByExpId").param("expId", "6"))

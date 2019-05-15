@@ -22,8 +22,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class MotnVOControllerTests extends AbstractContiPerf {
 
-    @Test
-    @PerfTest(threads = 100, invocations = 10000)
+//    @Test
+//    @PerfTest(threads = 100, invocations = 10000)
     public void getMotlsByTimelineNodeId() throws Exception {
 
         MvcResult result = mockMvc.perform(get("/motnVO/getListByTimelineNodeId").param("timelineNodeId", "1717"))
