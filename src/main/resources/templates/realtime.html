@@ -398,6 +398,52 @@
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-md-12 col-sm-12">
+                    <div class="portlet light">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="icon-speech"></i>
+                                <span class="caption-subject bold"> 访存分析</span>
+                                <span class="caption-helper">图表分析</span>
+                            </div>
+                            <div class="tools">
+                                <a href="javascript:" class="collapse"> </a>
+                                <a href="javascript:" class="reload"> </a>
+                                <a href="javascript:" class="remove"> </a>
+                            </div>
+                        </div>
+                        <div class="portlet-body">
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12">
+                                    <select id="RT_TypeSelect" class="bs-select form-control" data-show-subtext="true">
+                                        <optgroup label="读">
+                                            <option value="dynamicRead" data-subtext="总数">读</option>
+                                            <option value="readInCache" data-subtext="数量">缓存行命中</option>
+                                            <option value="readNotInCache" data-subtext="数量">缓存不命中</option>
+                                            <option value="stridedRead" data-subtext="数量，读地址间隔相等即为阶梯读">阶梯读</option>
+                                            <option value="pointerRead" data-subtext="数量，指针访问的读即为指针读">指针读</option>
+                                            <option value="randomRead" data-subtext="数量，无规律的读即为随机读">随机读</option>
+                                        </optgroup>
+                                        <optgroup label="写">
+                                            <option value="dynamicWrite" data-subtext="总数">写</option>
+                                        </optgroup>
+                                        <optgroup label="其他">
+                                            <option value="memRef" data-subtext="读和写">访存总数量</option>
+                                            <option value="readWriteRatio" data-subtext="百分比，计算公式：读 / 写 * 100%">读写比例</option>
+                                            <option value="readInCacheRatio" data-subtext="百分比，计算公式：缓存行命中 / 读 * 100%">缓存命中比例</option>
+                                            <option value="stridedReadRatio" data-subtext="百分比，计算公式：阶梯读 / 缓存行命中 * 100%">阶梯读比例</option>
+                                            <option value="pointerReadRatio" data-subtext="百分比，计算公式：指针读 / 缓存行命中 * 100%">指针读比例</option>
+                                            <option value="randomReadRatio" data-subtext="百分比，计算公式：随机读 / 缓存行命中 * 100%">随机读比例</option>
+                                        </optgroup>
+                                    </select>
+                                    <div id="RT_TimelineChart" style="height: 400px; width: 100%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <!-- END CONTENT BODY -->
     </div>

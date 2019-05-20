@@ -1732,7 +1732,7 @@ var Experiment = function () {
         } else {
             timelineChartOption.yAxis.name = "数量（个）";
         }
-        // console.log(timelineChartOption);
+        console.log(timelineChartOption);
         timelineChart.setOption(timelineChartOption);
     };
     // ---------------------------------- EXP_MemObjSelect End ----------------------------------- //

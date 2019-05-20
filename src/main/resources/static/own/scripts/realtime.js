@@ -845,7 +845,7 @@ var Realtime = function () {
                 }
                 memScatterOption.series[idx].data = data;
             });
-            console.log(memScatterOption);
+            // console.log(memScatterOption);
             memScatter.setOption(memScatterOption);
         });
         ws.flushOnMsgListenMap();
@@ -1007,6 +1007,275 @@ var Realtime = function () {
     };
     // ====================== One Memory Object Read Sector ======================== //
 
+    // ---------------------------------- RT_TimelineChart init Begin ----------------------------------- //
+    var timelineChartOption = {
+        title: {
+            top: '5%',
+            text: '内存对象访存行为'
+        },
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'cross'
+            },
+            formatter: function (params) {
+                var rs = [];
+                rs.push("时间：" + params[0]['axisValue'].toFixed(2) + " 秒 <br>");
+                $.each(params, function (index, value) {
+                    if (String(value['data'][1]).indexOf(".") > -1)
+                        rs.push(value['seriesName'].split("#")[0] + "：" + value['data'][1].toFixed(2) + "%<br>");
+                    else
+                        rs.push(value['seriesName'].split("#")[0] + "：" + value['data'][1] + "<br>");
+                });
+                return rs.join("");
+            }
+        },
+        legend: {
+            type: 'scroll',
+            top: '5%',
+            left: '15%',
+            right: '10%',
+            textStyle: {
+                fontSize: 15
+            },
+            data: []
+        },
+        grid: {
+            top: '25%',
+            left: '3%',
+            right: '10%',
+            bottom: '10%',
+            containLabel: true
+        },
+        toolbox: {
+            feature: {
+                dataZoom: {
+                    yAxisIndex: 'none'
+                },
+                restore: {},
+                saveAsImage: {}
+            }
+        },
+        dataZoom: [
+            {
+                type: 'inside',
+                start: 1,
+                end: 100
+            },
+            {
+                show: true,
+                type: 'slider',
+                bottom: '0%',
+                start: 1,
+                end: 100
+            }
+        ],
+        xAxis: {
+            type: 'value',
+            name: '时间（秒）',
+            nameTextStyle: {
+                fontSize: 15
+            },
+        },
+        yAxis: {
+            type: 'value',
+            name: '',
+            nameTextStyle: {
+                fontSize: 15
+            },
+        },
+        series: []
+    };
+
+    var timelineChart;
+
+    var memObjWithAggregateInfoMap = {};
+
+    /**
+     * 初始化 EChart
+     */
+    var lineInit = function () {
+        timelineChart = echarts.init(document.getElementById('RT_TimelineChart'), theme);
+        timelineChart.setOption(timelineChartOption);
+
+        ws.addOnMsgListen("updateTimelineChart", function (event) {
+            // 每个内存对象的访存信息
+            var objs = [];
+            // 汇总每个线程 TLS 的访存信息
+            var json = eval("(" + event.data + ")");
+            // 时间
+            var time = json["global_vars"]["time"];
+            var tls = json["TLS"];
+            $.each(tls, function (index, item) {
+                var accessedObjs = item["accessedObjs"];
+                $.each(accessedObjs, function (index2, item2) {
+                    if (objs.hasOwnProperty(item2["objId"])) {
+                        var obj = objs[item2["objId"]];
+                        obj["read"] += item2["dynamic_read"];
+                        obj["write"] += item2["dynamic_write"];
+                        obj["read_in_cache"] += item2["read_in_cache"];
+                        obj["strided_read"] += item2["strided_read"];
+                        obj["pointerchasing_read"] += item2["pointerchasing_read"];
+                        obj["random_read"] += item2["random_read"];
+                    } else {
+                        objs[item2["objId"]] = {};
+                        var obj = objs[item2["objId"]];
+                        obj["id"] = item2["objId"];
+                        obj["read"] = item2["dynamic_read"];
+                        obj["write"] = item2["dynamic_write"];
+                        obj["read_in_cache"] = item2["read_in_cache"];
+                        obj["strided_read"] = item2["strided_read"];
+                        obj["pointerchasing_read"] = item2["pointerchasing_read"];
+                        obj["random_read"] = item2["random_read"];
+                    }
+                });
+            });
+            // 或者从 json["masterlist"][index]["accessList"] 中取值
+            var masterlist = json["masterlist"];
+            $.each(masterlist, function (index, item) {
+                if (item["accessList"].length <= 0)
+                    return true;
+                var accessList = item["accessList"];
+                $.each(accessList, function (index2, item2) {
+                    if (objs.hasOwnProperty(item["objId"])) {
+                        var obj = objs[item["objId"]];
+                        obj["read"] += item2["dynamicRead"];
+                        obj["write"] += item2["dynamicWrite"];
+                        obj["read_in_cache"] += item2["readInCache"];
+                        obj["strided_read"] += item2["stridedRead"];
+                        obj["pointerchasing_read"] += item2["pointerChasingRead"];
+                        obj["random_read"] += item2["randomRead"];
+                    } else {
+                        objs[item["objId"]] = {};
+                        var obj = objs[item["objId"]];
+                        obj["id"] = item["objId"];
+                        obj["read"] = item2["dynamicRead"];
+                        obj["write"] = item2["dynamicWrite"];
+                        obj["read_in_cache"] = item2["readInCache"];
+                        obj["strided_read"] = item2["stridedRead"];
+                        obj["pointerchasing_read"] = item2["pointerChasingRead"];
+                        obj["random_read"] = item2["randomRead"];
+                    }
+                })
+            });
+
+            var kind = $("#RT_TypeSelect").val();
+            // memObjWithAggregateInfoMap
+            var memObjWithSingleAggregateInfoMap = [];
+            for (var objId in objs) {
+                var objInfo = masterlist[objId];
+                var accessVal = objs[objId];
+                var key = objInfo["varName"].replace(/\s/ig, '') + "#" + objId;
+                var value = [];
+                if (memObjWithAggregateInfoMap.hasOwnProperty(key)) {
+                    value = memObjWithAggregateInfoMap[key];
+                } else {
+                    memObjWithAggregateInfoMap[key] = value;
+                }
+                var v = [];
+                v["varName"] = objInfo["varName"].replace(/\s/ig, '');
+                v["time"] = time;
+                v["dynamicRead"] = accessVal["read"];
+                v["dynamicWrite"] = accessVal["write"];
+                v["readInCache"] = accessVal["read_in_cache"];
+                v["stridedRead"] = accessVal["strided_read"];
+                v["pointerRead"] = accessVal["pointerchasing_read"];
+                v["randomRead"] = accessVal["random_read"];
+                v["memRef"] = v["dynamicRead"] + v["dynamicWrite"];
+                if (v['memRef'] !== 0) v["readWriteRatio"] = v["dynamicRead"] * 100.0 / v["memRef"];
+                else v["readWriteRatio"] = 0;
+                if (v["dynamicRead"] !== 0) v["readInCacheRatio"] = v["readInCache"] * 100.0 / v["dynamicRead"];
+                else v["readInCacheRatio"] = 0;
+                v["readNotInCache"] = v["dynamicRead"] - v["readInCache"];
+                if (v["readNotInCache"] !== 0) {
+                    v["stridedReadRatio"] = v["stridedRead"] * 100.0 / v["readNotInCache"];
+                    v["randomReadRatio"] = v["randomRead"] * 100.0 / v["readNotInCache"];
+                    v["pointerReadRatio"] = v["pointerRead"] * 100.0 / v["readNotInCache"];
+                } else {
+                    v["stridedReadRatio"] = 0;
+                    v["randomReadRatio"] = 0;
+                    v["pointerReadRatio"] = 0;
+                }
+                value.push(v);
+
+                // 更新 timelineChartOption
+                var line;
+                if (timelineChartOption.legend.data.indexOf(key) === -1){
+                    timelineChartOption.legend.data.push(key);
+                    line = {};
+                    line["name"] = key;
+                    line["type"] = "line";
+                    line["data"] = [];
+                    // line["showSymbol"] = false;
+                    line["hoverAnimation"] = false;
+                    line["smooth"] = true;
+                    line["lineStyle"] = {normal: {opacity: 0.5}};
+                    line["data"].push([v["time"], v[kind]]);
+                    timelineChartOption.series.push(line);
+                }else {
+                    for (var i = 0; i < timelineChartOption.series.length; i++){
+                        if (timelineChartOption.series[i]["name"] === key){
+                            line = timelineChartOption.series[i];
+                            break;
+                        }
+                    }
+                    line["data"].push([v["time"], v[kind]]);
+                }
+                if (kind.indexOf("Ratio") !== -1) {
+                    timelineChartOption.yAxis.name = "百分比（%）";
+                } else {
+                    timelineChartOption.yAxis.name = "数量（个）";
+                }
+            }
+            // console.log(timelineChartOption);
+            timelineChart.setOption(timelineChartOption);
+        });
+        ws.flushOnMsgListenMap();
+    };
+    // ---------------------------------- RT_TimelineChart init End ----------------------------------- //
+
+    // ---------------------------------- RT_TypeSelect init Begin ----------------------------------- //
+    var typeSelectInit = function () {
+        // 初始化 EXP_TypeSelect
+        $("#RT_TypeSelect").selectpicker();
+        $('#RT_TypeSelect').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
+            renderTimelineChar();
+        });
+    };
+
+    // 重新渲染TimelineChar
+    var renderTimelineChar = function () {
+        var kind = $("#RT_TypeSelect").val();
+        timelineChart.clear();
+        var legendData = [];
+        var series = [];
+        $.each(memObjWithAggregateInfoMap, function (key, value) {
+            legendData.push(key);
+            var line = {};
+            line["name"] = key;
+            line["type"] = "line";
+            line["data"] = [];
+            // line["showSymbol"] = false;
+            line["hoverAnimation"] = false;
+            line["smooth"] = true;
+            line["lineStyle"] = {normal: {opacity: 0.5}};
+            $.each(value, function (i, objNode) {
+                var pArr = [(objNode["time"]), objNode[kind]];
+                line["data"].push(pArr);
+            });
+            series.push(line);
+        });
+        timelineChartOption.legend.data = legendData;
+        timelineChartOption.series = series;
+        if (kind.indexOf("Ratio") !== -1) {
+            timelineChartOption.yAxis.name = "百分比（%）";
+        } else {
+            timelineChartOption.yAxis.name = "数量（个）";
+        }
+        // console.log(timelineChartOption);
+        timelineChart.setOption(timelineChartOption);
+    };
+    // ---------------------------------- RT_TypeSelect init End ----------------------------------- //
 
     return {
         init: function () {
@@ -1018,6 +1287,9 @@ var Realtime = function () {
             _memScatterInit();
             _oneMemObjBtnInit();
             _oneMemObjPieInit();
+
+            lineInit();
+            typeSelectInit();
         }
     }
 }();

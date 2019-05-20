@@ -321,8 +321,8 @@ var Bootstrap = function () {
         }).hide();
 
         // 设置input为ip类型
-        $('#BS_ProfilerIP').ipAddress();
-        $('#BS_ScriptSocketServerIp').ipAddress();
+        // $('#BS_ProfilerIP').ipAddress();
+        // $('#BS_ScriptSocketServerIp').ipAddress();
 
         // 初始化ssh内容
         $.get("shell/getSsh", function (ret) {
