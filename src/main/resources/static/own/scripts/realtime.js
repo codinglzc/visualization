@@ -47,12 +47,12 @@ var Realtime = function () {
             // 跟新全局变量
             var globalVars = json["global_vars"];
             $("#RT_AppName").html(globalVars["app_name"]);
-            $("#RT_Time").html(globalVars["time"]);
-            $("#RT_GlobalIns").html(globalVars["global_ins_cnt"]);
-            $("#RT_DynReadIns").html(globalVars["dynamic_read_ins"]);
-            $("#RT_DynWriteIns").html(globalVars["dynamic_write_ins"]);
-            $("#RT_StaticReadIns").html(globalVars["static_read_ins"]);
-            $("#RT_StaticWriteIns").html(globalVars["static_write_ins"]);
+            $("#RT_Time").html(Global.formatTime(globalVars["time"] * 1000000));
+            $("#RT_GlobalIns").html(Global.formatNum(globalVars["global_ins_cnt"]));
+            $("#RT_DynReadIns").html(Global.formatNum(globalVars["dynamic_read_ins"]));
+            $("#RT_DynWriteIns").html(Global.formatNum(globalVars["dynamic_write_ins"]));
+            $("#RT_StaticReadIns").html(Global.formatNum(globalVars["static_read_ins"]));
+            $("#RT_StaticWriteIns").html(Global.formatNum(globalVars["static_write_ins"]));
         });
         // ====================== 添加触发事件 ======================== //
         // 在 websocket 连接之前，渲染 #RT_Note, #RT_WsStatus 状态栏
@@ -71,8 +71,8 @@ var Realtime = function () {
     var _memTreeInit = function () {
         var $tree = $('#RT_MemTree');
         $tree.jstree({
-            'plugins': ["checkbox", "types", "search", "state", "dnd"],
-            'state': {"key": "demo2"},
+            'plugins': ["checkbox", "types", "search", "dnd"],
+            // 'state': {"key": "demo2"},
             "types": {
                 "default": {
                     "icon": "fa fa-folder icon-state-warning icon-lg"
@@ -1020,7 +1020,7 @@ var Realtime = function () {
             },
             formatter: function (params) {
                 var rs = [];
-                rs.push("时间：" + params[0]['axisValue'].toFixed(2) + " 秒 <br>");
+                rs.push("时间：" + Global.formatTime(params[0]['axisValue']*1000000) + "<br>");
                 $.each(params, function (index, value) {
                     if (String(value['data'][1]).indexOf(".") > -1)
                         rs.push(value['seriesName'].split("#")[0] + "：" + value['data'][1].toFixed(2) + "%<br>");
@@ -1043,14 +1043,16 @@ var Realtime = function () {
         grid: {
             top: '25%',
             left: '3%',
-            right: '10%',
+            right: '5%',
             bottom: '10%',
-            containLabel: true
+            containLabel: true,
+            show: true,
+            borderColor:"#ccc"
         },
         toolbox: {
             feature: {
                 dataZoom: {
-                    yAxisIndex: 'none'
+                    // yAxisIndex: 'none'
                 },
                 restore: {},
                 saveAsImage: {}
@@ -1059,15 +1061,15 @@ var Realtime = function () {
         dataZoom: [
             {
                 type: 'inside',
-                start: 1,
-                end: 100
+                startValue: 0,
+                endValue: 30
             },
             {
                 show: true,
                 type: 'slider',
                 bottom: '0%',
-                start: 1,
-                end: 100
+                startValue: 0,
+                endValue: 30
             }
         ],
         xAxis: {
@@ -1076,12 +1078,36 @@ var Realtime = function () {
             nameTextStyle: {
                 fontSize: 15
             },
+            axisLine: {
+                show: false,
+            },
+            axisTick: {
+                show: false,
+            },
+            splitLine: {
+                show: false,
+            },
+            splitArea: {
+                show: false,
+            },
         },
         yAxis: {
             type: 'value',
             name: '',
             nameTextStyle: {
                 fontSize: 15
+            },
+            axisLine: {
+                show: false,
+            },
+            axisTick: {
+                show: false,
+            },
+            splitLine: {
+                show: false,
+            },
+            splitArea: {
+                show: false,
             },
         },
         series: []
@@ -1105,6 +1131,12 @@ var Realtime = function () {
             var json = eval("(" + event.data + ")");
             // 时间
             var time = json["global_vars"]["time"];
+            if (time > 30) {
+                $.each(timelineChartOption.dataZoom, function (idx, item) {
+                    item.endValue = Math.ceil(time);
+                    item.startValue = item.endValue - 30;
+                })
+            }
             var tls = json["TLS"];
             $.each(tls, function (index, item) {
                 var accessedObjs = item["accessedObjs"];
@@ -1200,7 +1232,7 @@ var Realtime = function () {
 
                 // 更新 timelineChartOption
                 var line;
-                if (timelineChartOption.legend.data.indexOf(key) === -1){
+                if (timelineChartOption.legend.data.indexOf(key) === -1) {
                     timelineChartOption.legend.data.push(key);
                     line = {};
                     line["name"] = key;
@@ -1212,9 +1244,9 @@ var Realtime = function () {
                     line["lineStyle"] = {normal: {opacity: 0.5}};
                     line["data"].push([v["time"], v[kind]]);
                     timelineChartOption.series.push(line);
-                }else {
-                    for (var i = 0; i < timelineChartOption.series.length; i++){
-                        if (timelineChartOption.series[i]["name"] === key){
+                } else {
+                    for (var i = 0; i < timelineChartOption.series.length; i++) {
+                        if (timelineChartOption.series[i]["name"] === key) {
                             line = timelineChartOption.series[i];
                             break;
                         }

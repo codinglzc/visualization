@@ -248,22 +248,23 @@
             <!-- END PAGE BAR -->
             <!-- BEGIN PAGE TITLE-->
             <h4 class="page-title">
-                实时监控界面
+                <!--实时监控界面-->
+                <span id="RT_WsStatus" class="label label-default"></span>
             </h4>
             <!-- END PAGE TITLE-->
             <!-- END PAGE HEADER-->
             <!-- BEGIN MAIN CONTENT -->
-            <div id="RT_Note" class="note note-info">
-                <h4>实时监控
-                    <span id="RT_WsStatus" class="label label-default"></span>
+            <!--<div id="RT_Note" class="note note-info">-->
+                <!--<h4>实时监控-->
+                    <!--<span id="RT_WsStatus" class="label label-default"></span>-->
 
-                </h4>
-                <p>
+                <!--</h4>-->
+                <!--<p>-->
 
-                </p>
-                <span class="label label-info">NOTE:</span>
-                HME 模拟器只支持一个程序在运行。
-            </div>
+                <!--</p>-->
+                <!--<span class="label label-info">NOTE:</span>-->
+                <!--HME 模拟器只支持一个程序在运行。-->
+            <!--</div>-->
 
             <div class="row">
                 <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
@@ -279,9 +280,9 @@
                         <!--<div class="number"> 0</div>-->
                         <!--<div class="desc"> Info</div>-->
                         <!--</div>-->
-                        <a class="more" href="#"> 更多
-                            <i class="m-icon-swapright m-icon-white"></i>
-                        </a>
+                        <!--<a class="more" href="#"> 更多-->
+                            <!--<i class="m-icon-swapright m-icon-white"></i>-->
+                        <!--</a>-->
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
@@ -291,15 +292,15 @@
                         </div>
                         <div class="details-left">
                             <div id="RT_Time" class="number"> 0</div>
-                            <div class="desc"> 时间(秒)</div>
+                            <div class="desc"> 时间</div>
                         </div>
                         <div class="details-right">
                             <div id="RT_GlobalIns" class="number"> 0</div>
                             <div class="desc"> 总共指令数</div>
                         </div>
-                        <a class="more" href="#"> 更多
-                            <i class="m-icon-swapright m-icon-white"></i>
-                        </a>
+                        <!--<a class="more" href="#"> 更多-->
+                            <!--<i class="m-icon-swapright m-icon-white"></i>-->
+                        <!--</a>-->
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
@@ -315,9 +316,9 @@
                             <div id="RT_DynWriteIns" class="number"> 0</div>
                             <div class="desc"> 动态写指令数</div>
                         </div>
-                        <a class="more" href="#"> 更多
-                            <i class="m-icon-swapright m-icon-white"></i>
-                        </a>
+                        <!--<a class="more" href="#"> 更多-->
+                            <!--<i class="m-icon-swapright m-icon-white"></i>-->
+                        <!--</a>-->
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
@@ -333,68 +334,9 @@
                             <div id="RT_StaticWriteIns" class="number"> 0</div>
                             <div class="desc"> 静态写指令数</div>
                         </div>
-                        <a class="more" href="#"> 更多
-                            <i class="m-icon-swapright m-icon-white"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <!-- 内存对象 -->
-                <div class="col-md-12 col-sm-12">
-                    <div class="portlet light">
-                        <div class="portlet-title">
-                            <div class="caption">
-                                <i class="icon-speech"></i>
-                                <span class="caption-subject bold"> 内存对象</span>
-                                <span class="caption-helper">包括仍然存活和已经死亡的对象</span>
-                            </div>
-                            <div class="tools">
-                                <a href="javascript:" class="collapse"> </a>
-                                <a href="#portlet-config" data-toggle="modal" class="config"> </a>
-                                <a href="javascript:" class="reload"> </a>
-                                <a href="javascript:" class="remove"> </a>
-                            </div>
-                        </div>
-                        <div class="portlet-body">
-                            <div class="row">
-                                <div class="col-md-3 col-sm-12">
-                                    <input id="RT_MemTree_Search" type="text" class="form-control" placeholder="Search">
-                                    <div class="scroller" style="height:350px;"
-                                         data-rail-visible="1" data-rail-color="yellow"
-                                         data-handle-color="#a1b2bd">
-                                        <div id="RT_MemTree" class="tree-demo"></div>
-                                    </div>
-                                </div>
-                                <div class="col-md-9 col-sm-12">
-                                    <table id="RT_MemTable"></table>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="row">
-                                <div class="col-md-3 col-sm-12">
-                                    <div class="btn-toolbar margin-bottom-5">
-                                        <div class="btn-group btn-group-sm btn-group-solid">
-                                            <button id="RT_OneMemObjShowR_Btn" type="button" class="btn blue">
-                                                只显示读
-                                            </button>
-                                            <button id="RT_OneMemObjShowRW_Btn" type="button" class="btn green">
-                                                显示读和写
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div id="RT_OneMemObjPie" style="height: 400px; width: 100%;"></div>
-                                </div>
-                                <div class="col-md-9 col-sm-12">
-                                    <select id="RT_MemSelect" class="bs-select form-control input-small">
-                                        <option value="size">大小</option>
-                                        <option value="read">读次数</option>
-                                        <option value="write">写次数</option>
-                                    </select>
-                                    <div id="RT_MemScatter" style="height: 400px; width: 100%;"></div>
-                                </div>
-                            </div>
-                        </div>
+                        <!--<a class="more" href="#"> 更多-->
+                            <!--<i class="m-icon-swapright m-icon-white"></i>-->
+                        <!--</a>-->
                     </div>
                 </div>
             </div>
@@ -444,6 +386,66 @@
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <!-- 内存对象 -->
+                <div class="col-md-12 col-sm-12">
+                    <div class="portlet light">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="icon-speech"></i>
+                                <span class="caption-subject bold"> 内存对象</span>
+                                <span class="caption-helper">包括仍然存活和已经死亡的对象</span>
+                            </div>
+                            <div class="tools">
+                                <a href="javascript:" class="collapse"> </a>
+                                <a href="#portlet-config" data-toggle="modal" class="config"> </a>
+                                <a href="javascript:" class="reload"> </a>
+                                <a href="javascript:" class="remove"> </a>
+                            </div>
+                        </div>
+                        <div class="portlet-body">
+                            <div class="row">
+                                <div class="col-md-3 col-sm-12">
+                                    <div class="btn-toolbar margin-bottom-5">
+                                        <div class="btn-group btn-group-sm btn-group-solid">
+                                            <button id="RT_OneMemObjShowR_Btn" type="button" class="btn blue">
+                                                只显示读
+                                            </button>
+                                            <button id="RT_OneMemObjShowRW_Btn" type="button" class="btn green">
+                                                显示读和写
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div id="RT_OneMemObjPie" style="height: 400px; width: 100%;"></div>
+                                </div>
+                                <div class="col-md-9 col-sm-12">
+                                    <select id="RT_MemSelect" class="bs-select form-control input-small">
+                                        <option value="size">大小</option>
+                                        <option value="read">读次数</option>
+                                        <option value="write">写次数</option>
+                                    </select>
+                                    <div id="RT_MemScatter" style="height: 400px; width: 100%;"></div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-3 col-sm-12">
+                                    <input id="RT_MemTree_Search" type="text" class="form-control" placeholder="Search">
+                                    <div class="scroller" style="height:350px;"
+                                         data-rail-visible="1" data-rail-color="yellow"
+                                         data-handle-color="#a1b2bd">
+                                        <div id="RT_MemTree" class="tree-demo"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-9 col-sm-12">
+                                    <table id="RT_MemTable"></table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
         <!-- END CONTENT BODY -->
     </div>

@@ -72,7 +72,7 @@ var Global = function () {
         var rs = "";
         // if (days !== 0) rs += days + " 天 ";
         if (hours !== 0) rs += hours + " 小时 ";
-        if (minutes !== 0) rs += minutes + " 分钟 ";
+        if (minutes !== 0) rs += minutes + " 分 ";
         if (seconds !== 0) rs += seconds + " 秒 ";
         if (hours === 0 && minutes === 0 && seconds === 0)
             return "0 秒";
@@ -147,6 +147,17 @@ var Global = function () {
         return size.toFixed(2) + " " + unit;
     };
 
+    var formatNum = function (num) {
+        var unit = "";
+        var n = 0;
+        while (num >= 1000) {
+            num /= 1000.0;
+            n += 3;
+            unit = 10 + "<sup>" + n + "</sup>";
+        }
+        return unit === "" ? num : (num.toFixed(2) + "*" + unit);
+    };
+
     return {
         init: function () {
             terminalUrlInit();
@@ -159,6 +170,7 @@ var Global = function () {
         getAllocType: getAllocType,
         getAllocFunction: getAllocFunction,
         formatSize: formatSize,
+        formatNum: formatNum,
     }
 }();
 

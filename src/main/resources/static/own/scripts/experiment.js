@@ -632,11 +632,11 @@ var Experiment = function () {
             $.get("globalVars/getByTimelineNodeId", {timelineNodeId: timelineNodeId}, function (gvData) {
                 if (!Global.checkServerMsg(gvData)) return;
                 var globalVars = gvData["extend"]["globalVars"];
-                $("#EXP_GlobalIns").html(globalVars["globalInstrumentCount"]);
-                $("#EXP_DynReadIns").html(globalVars["dynamicReadInstrument"]);
-                $("#EXP_DynWriteIns").html(globalVars["dynamicWriteInstrument"]);
-                $("#EXP_StaticReadIns").html(globalVars["staticReadInstrument"]);
-                $("#EXP_StaticWriteIns").html(globalVars["staticWriteInstrument"]);
+                $("#EXP_GlobalIns").html(Global.formatNum(globalVars["globalInstrumentCount"]));
+                $("#EXP_DynReadIns").html(Global.formatNum(globalVars["dynamicReadInstrument"]));
+                $("#EXP_DynWriteIns").html(Global.formatNum(globalVars["dynamicWriteInstrument"]));
+                $("#EXP_StaticReadIns").html(Global.formatNum(globalVars["staticReadInstrument"]));
+                $("#EXP_StaticWriteIns").html(Global.formatNum(globalVars["staticWriteInstrument"]));
             });
         });
 
@@ -671,8 +671,8 @@ var Experiment = function () {
      */
     var initMemTree = function () {
         $('#EXP_MemTree').jstree({
-            'plugins': ["checkbox", "types", "search", "state", "dnd"],
-            'state': {"key": "demo2"},
+            'plugins': ["checkbox", "types", "search", "dnd"],
+            // 'state': {"key": "demo2"},
             "types": {
                 "default": {
                     "icon": "fa fa-folder icon-state-warning icon-lg"
@@ -1388,7 +1388,7 @@ var Experiment = function () {
                 }
                 option.series[idx].data = data;
             });
-            console.log(option);
+            // console.log(option);
             memScatter.setOption(option);
         });
 
@@ -1567,7 +1567,7 @@ var Experiment = function () {
             },
             formatter: function (params) {
                 var rs = [];
-                rs.push("时间：" + params[0]['axisValue'] + " 秒 <br>");
+                rs.push("时间：" + Global.formatTime(params[0]['axisValue']*1000000) + "<br>");
                 $.each(params, function (index, value) {
                     if (String(value['data'][1]).indexOf(".") > -1)
                         rs.push(value['seriesName'].split("#")[0] + "：" + value['data'][1].toFixed(2) + "%<br>");
@@ -1592,7 +1592,9 @@ var Experiment = function () {
             left: '3%',
             right: '10%',
             bottom: '10%',
-            containLabel: true
+            containLabel: true,
+            show: true,
+            borderColor:"#ccc"
         },
         toolbox: {
             feature: {
@@ -1623,12 +1625,36 @@ var Experiment = function () {
             nameTextStyle: {
                 fontSize: 15
             },
+            axisLine: {
+                show: false,
+            },
+            axisTick: {
+                show: false,
+            },
+            splitLine: {
+                show: false,
+            },
+            splitArea: {
+                show: false,
+            },
         },
         yAxis: {
             type: 'value',
             name: '',
             nameTextStyle: {
                 fontSize: 15
+            },
+            axisLine: {
+                show: false,
+            },
+            axisTick: {
+                show: false,
+            },
+            splitLine: {
+                show: false,
+            },
+            splitArea: {
+                show: false,
             },
         },
         series: []
@@ -1672,7 +1698,7 @@ var Experiment = function () {
                     return;
                 }
                 memObjWithAggregateInfoMap = res["extend"]["map"];
-                console.log(memObjWithAggregateInfoMap);
+                // console.log(memObjWithAggregateInfoMap);
                 // 初始化EXP_MemObjSelect
                 $("#EXP_MemObjSelect").multiSelect({
                     keepOrder: true,
@@ -1732,7 +1758,7 @@ var Experiment = function () {
         } else {
             timelineChartOption.yAxis.name = "数量（个）";
         }
-        console.log(timelineChartOption);
+        // console.log(timelineChartOption);
         timelineChart.setOption(timelineChartOption);
     };
     // ---------------------------------- EXP_MemObjSelect End ----------------------------------- //
